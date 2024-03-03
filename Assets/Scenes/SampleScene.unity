@@ -512,7 +512,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4541326845905418872}
-  - {fileID: 963194228}
   m_Father: {fileID: 5995814803012894360}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -529,9 +528,9 @@ Rigidbody:
   m_AngularDrag: 0.05
   m_UseGravity: 0
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!65 &580520462
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -572,6 +571,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7de18ca620bc0bd4a8a865ad55a621d8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  headTransform: {fileID: 943877912005999761}
+  headYOffset: 20
+  yRotationLimit: 50
+  sensitivity: 2
 --- !u!1 &589044888
 GameObject:
   m_ObjectHideFlags: 0
@@ -1457,12 +1460,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -0.176, z: 1.05}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.5865757, y: 0.00000009653783, z: 0.00000006991888, w: 0.80989444}
+  m_LocalPosition: {x: 0, y: 0.005135099, z: 0.0031688632}
+  m_LocalScale: {x: 0.01, y: 0.00999982, z: 0.009999995}
   m_Children: []
-  m_Father: {fileID: 580520460}
-  m_RootOrder: 1
+  m_Father: {fileID: 943877912005999761}
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
@@ -2922,6 +2925,7 @@ Transform:
   m_Children:
   - {fileID: 4746150737713247818}
   - {fileID: 964344829974535948}
+  - {fileID: 963194228}
   m_Father: {fileID: 4495548754067803042}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -4228,7 +4232,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12750443b4a36f46b2d835caaed64e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxLegDistance: 0.75
+  maxLegDistance: 1
   legStepHeight: 0.5
   legAnimationCurve:
     serializedVersion: 2
@@ -4263,7 +4267,7 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  stepDuration: 0.2
+  stepDuration: 0.1
   legTargets:
   - {fileID: 1189872792}
   - {fileID: 2142055481}

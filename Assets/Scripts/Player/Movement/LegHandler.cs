@@ -55,7 +55,7 @@ public class LegHandler : MonoBehaviour
 
     Vector3 GetNewLegPosition(Transform legPosition, Transform legAnchor)
     {
-        return Vector3.LerpUnclamped(legPosition.position, legAnchor.position, 1.5f);
+        return legAnchor.position;
     }
 
     int GetLegGroup(int legNumber)
