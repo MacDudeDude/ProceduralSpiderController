@@ -46,7 +46,7 @@ public class PlayerOrientation : MonoBehaviour
 
     public Vector3 GetNewHeightPosition()
     {
-        return Vector3.Lerp(rb.position, groundPoint + Vector3.Lerp(groundNormal, wallNormal, distanceToWall) * height, 2 * Time.fixedDeltaTime);
+        return Vector3.Slerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * height, 2 * Time.fixedDeltaTime);
     }
 
     private void SetUpRotation()
