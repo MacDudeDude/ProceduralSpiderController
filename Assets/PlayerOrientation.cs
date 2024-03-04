@@ -13,7 +13,6 @@ public class PlayerOrientation : MonoBehaviour
     [SerializeField] private LayerMask walkableLayers;
 
     [SerializeField] private float height;
-    [SerializeField] private PIDController heightController;
 
     private Rigidbody rb;
 
@@ -38,25 +37,22 @@ public class PlayerOrientation : MonoBehaviour
 
         CheckGround();
         CheckWall();
-
-        SetUpRotation();
     }
 
     private void FixedUpdate()
     {
-        MatchHeight();
+        SetUpRotation();
     }
 
-    void MatchHeight()
+    public Vector3 GetNewHeightPosition()
     {
-        float throttle = heightController.Update(Time.fixedDeltaTime, Vector3.Distance(groundPoint, transform.position), height);
-        rb.AddRelativeForce(Vector3.up * throttle);
+        return Vector3.Lerp(rb.position, groundPoint + Vector3.Lerp(groundNormal, wallNormal, distanceToWall) * height, 2 * Time.fixedDeltaTime);
     }
 
     private void SetUpRotation()
     {
         var targetRotation = SpiderUpRotation(transform.forward, Vector3.Slerp(groundNormal, wallNormal, distanceToWall));
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.deltaTime);
+        rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.fixedDeltaTime));
     }
 
     private void CheckGround()

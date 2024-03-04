@@ -5,15 +5,15 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed;
-    [SerializeField] private float maxSpeed;
-    [SerializeField] private float counterforceStrength;
 
+    private PlayerOrientation bodyHandler;
     private Rigidbody rb;
     private Vector3 input;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        bodyHandler = GetComponent<PlayerOrientation>();
     }
 
     private void Update()
@@ -24,7 +24,6 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         Move();
-        CounterMove();
     }
 
     private void GetInputs()
@@ -36,27 +35,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Move()
     {
-        Vector3 relativeVelocity = transform.InverseTransformDirection(rb.velocity);
-        if (Mathf.Abs(relativeVelocity.x) >= maxSpeed && relativeVelocity.x > 0 == input.x > 0)
-            input.x = 0;
-        if (Mathf.Abs(relativeVelocity.z) >= maxSpeed && relativeVelocity.z > 0 == input.z > 0)
-            input.z = 0;
-
-        rb.AddRelativeForce(input * speed);
-    }
-
-    private void CounterMove()
-    {
-        Vector3 counterMovement = Vector3.zero;
-        Vector3 relativeVelocity = transform.InverseTransformDirection(rb.velocity);
-
-        if(Mathf.Approximately(input.x, 0))
-            counterMovement.x = relativeVelocity.x;
-        if (Mathf.Approximately(input.z, 0))
-            counterMovement.z = relativeVelocity.z;
-
-        counterMovement *= -1;
-
-        rb.AddRelativeForce(counterMovement * counterforceStrength);
+        Vector3 newPosition = bodyHandler.GetNewHeightPosition();
+        Vector3 forces = rb.rotation * input * speed;
+        rb.MovePosition(newPosition + forces * Time.fixedDeltaTime);
     }
 }
