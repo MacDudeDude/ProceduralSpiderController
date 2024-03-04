@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed;
-    public float maxSpeed;
-    public float counterforceStrength;
+    [SerializeField] private float speed;
+    [SerializeField] private float maxSpeed;
+    [SerializeField] private float counterforceStrength;
 
     private Rigidbody rb;
     private Vector3 input;

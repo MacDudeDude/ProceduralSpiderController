@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerCameraController : MonoBehaviour
 {
 	[SerializeField] private Transform headTransform;
+	[SerializeField] private Transform bodyTransform;
 	[SerializeField] private float headYOffset;
 
 	[SerializeField] [Range(0f, 90f)] private float yRotationLimit = 88f;
@@ -31,12 +32,12 @@ public class PlayerCameraController : MonoBehaviour
 		var bodyRotation = (xQuat * yQuat).eulerAngles;
 		var headRotation = bodyRotation;
 
-		bodyRotation.x = 0;
-		bodyRotation.z = 0;
+		bodyRotation.x = bodyTransform.rotation.eulerAngles.x;
+		bodyRotation.z = bodyTransform.rotation.eulerAngles.z;
 
 		headRotation.y = 0;
 
 		headTransform.localRotation = Quaternion.Euler(headRotation);
-		transform.localRotation = Quaternion.Euler(bodyRotation);
+		bodyTransform.localRotation = Quaternion.Euler(bodyRotation);
 	}
 }
