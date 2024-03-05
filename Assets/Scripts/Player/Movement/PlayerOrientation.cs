@@ -53,7 +53,7 @@ public class PlayerOrientation : MonoBehaviour
     private void SetUpRotation()
     {
         var targetRotation = SpiderUpRotation(transform.forward, Vector3.Slerp(groundNormal, wallNormal, distanceToWall));
-        rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, 20 * Time.fixedDeltaTime));
+        rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.fixedDeltaTime));
     }
 
     private void CheckGround()
