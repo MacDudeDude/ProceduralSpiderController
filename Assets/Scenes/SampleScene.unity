@@ -1478,10 +1478,12 @@ MonoBehaviour:
   groundCheckDistance: 4
   groundCheckRadius: 0.5
   wallCheckDistance: 4
-  wallCheckRadius: 0.25
+  wallCheckRadius: 0.5
   walkableLayers:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 55
+  heightMatchSpeed: 1
+  rotationMatchSpeed: 10
   height: 1
   breathingSpeed: 5
   breathingStrength: 0.1

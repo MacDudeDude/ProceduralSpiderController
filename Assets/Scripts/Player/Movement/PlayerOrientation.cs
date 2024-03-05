@@ -14,6 +14,8 @@ public class PlayerOrientation : MonoBehaviour
 
     [SerializeField] private LayerMask walkableLayers;
 
+    [SerializeField] private float heightMatchSpeed;
+    [SerializeField] private float rotationMatchSpeed;
     [SerializeField] private float height;
     [SerializeField] private float breathingSpeed;
     [SerializeField] private float breathingStrength;
@@ -49,13 +51,13 @@ public class PlayerOrientation : MonoBehaviour
 
     public Vector3 GetNewHeightPosition()
     {
-        return Vector3.Slerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength), 1 * Time.fixedDeltaTime);
+        return Vector3.Slerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength), heightMatchSpeed * Time.fixedDeltaTime);
     }
 
     private void SetUpRotation()
     {
         var targetRotation = SpiderUpRotation(transform.forward, Vector3.Slerp(groundNormal, wallNormal, distanceToWall));
-        rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, 10 * Time.fixedDeltaTime));
+        rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, rotationMatchSpeed * Time.fixedDeltaTime));
     }
 
     private void CheckGround()
