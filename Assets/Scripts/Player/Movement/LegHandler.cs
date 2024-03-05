@@ -10,6 +10,7 @@ public class LegHandler : MonoBehaviour
     [SerializeField] private float stepDuration;
     [SerializeField] private Transform[] legTargets;
     [SerializeField] private Transform[] legAnchors;
+    [SerializeField] private LayerMask canStepLayers;
 
     private bool isStepping;
     private int legGroupStepping;
