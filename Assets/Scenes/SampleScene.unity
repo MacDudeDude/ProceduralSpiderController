@@ -634,7 +634,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   absoulteRotationTransform: {fileID: 1719654956}
   groundCheckDistance: 4
-  groundCheckRadius: 0.25
+  groundCheckRadius: 0.5
   wallCheckDistance: 4
   wallCheckRadius: 0.25
   walkableLayers:
