@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerOrientation : MonoBehaviour
 {
+    [SerializeField] private Transform absoulteRotationTransform;
+
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private float groundCheckRadius;
 
@@ -91,7 +93,7 @@ public class PlayerOrientation : MonoBehaviour
             inputVector.x = Input.GetAxisRaw("Horizontal");
             inputVector.y = 0;
             inputVector.z = Input.GetAxisRaw("Vertical");
-            inputVector = transform.TransformDirection(inputVector);
+            inputVector = absoulteRotationTransform.TransformDirection(inputVector);
         }
 
     }

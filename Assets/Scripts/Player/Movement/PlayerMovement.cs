@@ -36,7 +36,13 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         Vector3 newPosition = bodyHandler.GetNewHeightPosition();
-        Vector3 forces = rb.rotation * input * speed;
+        Vector3 forces = transform.GetChild(0).rotation * input * speed;
         rb.MovePosition(newPosition + forces * Time.fixedDeltaTime);
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.magenta;
+        Gizmos.DrawRay(transform.position, transform.GetChild(0).rotation * input * 5);
     }
 }

@@ -632,6 +632,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 875300d10c42b604fb75bb197b3e0604, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  absoulteRotationTransform: {fileID: 1719654956}
   groundCheckDistance: 4
   groundCheckRadius: 0.25
   wallCheckDistance: 4
@@ -2930,7 +2931,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1719654956}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: Absoulte Spider Rotation
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

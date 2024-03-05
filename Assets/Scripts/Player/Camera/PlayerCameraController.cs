@@ -19,25 +19,17 @@ public class PlayerCameraController : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 	}
 
-	void Update()
-	{
+    void Update()
+    {
         rotation.x += Input.GetAxis("Mouse X") * sensitivity;
         rotation.y += Input.GetAxis("Mouse Y") * sensitivity;
 
         rotation.y = Mathf.Clamp(rotation.y, -yRotationLimit + headYOffset, yRotationLimit + headYOffset);
 
-        var xQuat = Quaternion.AngleAxis(rotation.x, Vector3.up);
-        var yQuat = Quaternion.AngleAxis(rotation.y, Vector3.left);
+        Quaternion bodyRotation = Quaternion.AngleAxis(rotation.x, Vector3.up);
+        Quaternion headRotation = Quaternion.AngleAxis(rotation.y, Vector3.left);
 
-        var bodyRotation = (xQuat * yQuat).eulerAngles;
-        var headRotation = bodyRotation;
-
-        bodyRotation.x = bodyTransform.rotation.eulerAngles.x;
-        bodyRotation.z = bodyTransform.rotation.eulerAngles.z;
-
-        headRotation.y = 0;
-
-        headTransform.localRotation = Quaternion.Euler(headRotation);
-        bodyTransform.localRotation = Quaternion.Euler(bodyRotation);
-	}
+        bodyTransform.localRotation = bodyRotation;
+        headTransform.localRotation = headRotation;
+    }
 }
