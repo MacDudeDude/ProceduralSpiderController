@@ -17,6 +17,7 @@ public class PlayerCameraController : MonoBehaviour
 	{
 		Cursor.visible = false;
 		Cursor.lockState = CursorLockMode.Locked;
+		Application.targetFrameRate = 30;
 	}
 
     void Update()

@@ -36,13 +36,12 @@ public class PlayerOrientation : MonoBehaviour
     void Update()
     {
         GetInputVector();
-
-        CheckGround();
-        CheckWall();
     }
 
     private void FixedUpdate()
     {
+        CheckGround();
+        CheckWall();
         SetUpRotation();
     }
 
