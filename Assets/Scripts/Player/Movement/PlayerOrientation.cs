@@ -31,6 +31,8 @@ public class PlayerOrientation : MonoBehaviour
     private Vector3 wallNormal;
     private float distanceToWall;
 
+    private Vector3 previousPosition;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -91,14 +93,32 @@ public class PlayerOrientation : MonoBehaviour
 
     private void GetInputVector()
     {
-        if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        //if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+        //{
+        //    inputVector.x = Input.GetAxisRaw("Horizontal");
+        //    inputVector.y = 0;
+        //    inputVector.z = Input.GetAxisRaw("Vertical");
+        //    inputVector = absoulteRotationTransform.TransformDirection(inputVector);
+        //}
+
+        Vector3 newInputVector = absoulteRotationTransform.InverseTransformVector((absoulteRotationTransform.position - previousPosition));
+        if (VectorIsNotZero(newInputVector))
         {
-            inputVector.x = Input.GetAxisRaw("Horizontal");
-            inputVector.y = 0;
-            inputVector.z = Input.GetAxisRaw("Vertical");
+            newInputVector.y = 0;
+            inputVector = newInputVector.normalized;
             inputVector = absoulteRotationTransform.TransformDirection(inputVector);
         }
+        previousPosition = absoulteRotationTransform.position;
+    }
 
+    private bool VectorIsNotZero(Vector3 toCheck)
+    {
+        if (Mathf.Abs(toCheck.x) > 0.05f)
+            return true;
+        if (Mathf.Abs(toCheck.z) > 0.05f)
+            return true;
+
+        return false;
     }
 
     Quaternion SpiderUpRotation(Vector3 approximateForward, Vector3 exactUp)

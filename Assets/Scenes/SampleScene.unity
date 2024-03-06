@@ -1461,7 +1461,7 @@ MonoBehaviour:
   headTransform: {fileID: 943877912005999761}
   bodyTransform: {fileID: 1719654956}
   headYOffset: 20
-  yRotationLimit: 50
+  yRotationLimit: 75
   sensitivity: 2
 --- !u!114 &580520465
 MonoBehaviour:
@@ -6588,6 +6588,9 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   stepDuration: 0.1
+  stepRays:
+  - {x: 0, y: -2, z: 0}
+  bodyTranform: {fileID: 1111087986}
   legTargets:
   - {fileID: 1189872792}
   - {fileID: 2142055481}

@@ -4,10 +4,15 @@ using UnityEngine;
 
 public class LegHandler : MonoBehaviour
 {
+    [Header("Step Settings")]
     [SerializeField] private float maxLegDistance;
     [SerializeField] private float legStepHeight;
     [SerializeField] private AnimationCurve legAnimationCurve;
     [SerializeField] private float stepDuration;
+    [SerializeField] private Vector3[] stepRays;
+
+    [Header("Transforms")]
+    [SerializeField] private Transform bodyTranform;
     [SerializeField] private Transform[] legTargets;
     [SerializeField] private Transform[] legAnchors;
     [SerializeField] private LayerMask canStepLayers;
@@ -15,6 +20,7 @@ public class LegHandler : MonoBehaviour
     private bool isStepping;
     private int legGroupStepping;
     private float stepDurationLeft;
+    private Vector3 previousPosition;
 
     private void Start()
     {
@@ -27,6 +33,8 @@ public class LegHandler : MonoBehaviour
     private void Update()
     {
         UpdateLegPositions();
+
+        previousPosition = bodyTranform.position;
     }
 
     void UpdateLegPositions()
@@ -99,5 +107,25 @@ public class LegHandler : MonoBehaviour
         }
 
         legTransform.position = targetPosition;
+    }
+
+    private void OnDrawGizmos()
+    {
+
+
+        Gizmos.color = Color.white;
+        for (int i = 0; i < legAnchors.Length; i++)
+        {
+            Gizmos.DrawWireSphere(legAnchors[i].position, 0.25f);
+        }
+
+        Gizmos.color = Color.red;
+        for (int i = 0; i < legAnchors.Length; i++)
+        {
+            for (int r = 0; r < stepRays.Length; r++)
+            {
+                Gizmos.DrawRay(legAnchors[i].position, bodyTranform.rotation * stepRays[r]);
+            }
+        }
     }
 }
