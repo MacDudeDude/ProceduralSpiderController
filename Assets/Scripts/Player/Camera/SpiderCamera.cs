@@ -6,7 +6,7 @@ public class SpiderCamera : MonoBehaviour
 {
     [SerializeField] private Transform spiderHead;
 
-    void LateUpdate()
+    private void LateUpdate()
     {
         transform.position = spiderHead.position;
         transform.rotation = spiderHead.rotation;

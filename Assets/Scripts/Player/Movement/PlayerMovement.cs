@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed;
+    [SerializeField] private Transform bodyForward;
 
     private PlayerOrientation bodyHandler;
     private Rigidbody rb;
@@ -36,7 +37,7 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         Vector3 newPosition = bodyHandler.GetNewHeightPosition();
-        Vector3 forces = transform.GetChild(0).rotation * input * speed;
+        Vector3 forces = bodyForward.rotation * input * speed;
         rb.MovePosition(newPosition + forces * Time.fixedDeltaTime);
     }
 
