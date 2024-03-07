@@ -7,6 +7,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float speed;
     [SerializeField] private Transform bodyForward;
 
+    private SpiderState state;
     private PlayerOrientation bodyHandler;
     private Rigidbody rb;
     private Vector3 input;
@@ -15,6 +16,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         bodyHandler = GetComponent<PlayerOrientation>();
+        state = transform.root.GetComponent<SpiderState>();
     }
 
     private void Update()

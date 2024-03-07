@@ -1461,7 +1461,7 @@ MonoBehaviour:
   headTransform: {fileID: 943877912005999761}
   bodyTransform: {fileID: 1719654956}
   headYOffset: 20
-  yRotationLimit: 75
+  yRotationLimit: 90
   sensitivity: 2
 --- !u!114 &580520465
 MonoBehaviour:
@@ -2759,7 +2759,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
+  near clip plane: 0.07
   far clip plane: 1000
   field of view: 90
   orthographic: 0
@@ -6712,6 +6712,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5995814803012894360}
   - component: {fileID: 6376737975680427043}
+  - component: {fileID: 6376737975680427044}
   m_Layer: 10
   m_Name: Spider Holder
   m_TagString: Untagged
@@ -6791,6 +6792,19 @@ MonoBehaviour:
   canStepLayers:
     serializedVersion: 2
     m_Bits: 55
+--- !u!114 &6376737975680427044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6376737975680427042}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df38c6a405dfe6e4f863aba93624191e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentState: 0
 --- !u!4 &6433163348143069743
 Transform:
   m_ObjectHideFlags: 0

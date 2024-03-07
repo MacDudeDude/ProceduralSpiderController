@@ -23,9 +23,9 @@ public class PlayerOrientation : MonoBehaviour
     [SerializeField] private bool useVelocityForWallCheck;
 
     private Rigidbody rb;
+    private SpiderState state;
 
     private Vector3 inputVector;
-    private bool isDescending;
 
     private Vector3 groundPoint;
     private Vector3 wallPoint;
@@ -39,13 +39,13 @@ public class PlayerOrientation : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        state = transform.root.GetComponent<SpiderState>();
     }
 
     // Update is called once per frame
     void Update()
     {
         GetInputVector();
-        GetInputs();
     }
 
     private void FixedUpdate()
@@ -57,10 +57,17 @@ public class PlayerOrientation : MonoBehaviour
 
     public Vector3 GetNewHeightPosition()
     {
-        if (!isDescending)
-            return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength), heightMatchSpeed * Time.fixedDeltaTime);
-        else
-            return rb.position - Vector3.up * 4f * Time.fixedDeltaTime;
+        switch (state.currentState)
+        {
+            case SpiderState.MovementState.Jumping:
+                return Vector3.zero;
+            case SpiderState.MovementState.Descending:
+                return rb.position - Vector3.up * 4f * Time.fixedDeltaTime;
+
+            case SpiderState.MovementState.Default:
+            default:
+                return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength), heightMatchSpeed * Time.fixedDeltaTime);
+        }
     }
 
     private void SetUpRotation()
@@ -98,11 +105,6 @@ public class PlayerOrientation : MonoBehaviour
         }
     }
 
-    private void GetInputs()
-    {
-        isDescending = Input.GetKey(KeyCode.LeftControl);
-    }
-
     private void GetInputVector()
     {
         if(useVelocityForWallCheck)
@@ -125,7 +127,7 @@ public class PlayerOrientation : MonoBehaviour
                 inputVector = absoulteRotationTransform.TransformDirection(inputVector);
             }
 
-            if(isDescending)
+            if(state.currentState == SpiderState.MovementState.Descending)
             {
                 inputVector.x = 0;
                 inputVector.y = -1;

@@ -19,12 +19,16 @@ public class LegHandler : MonoBehaviour
 
     [SerializeField] private LayerMask canStepLayers;
 
+    private SpiderState state;
+
     private bool isStepping;
     private int legGroupStepping;
     private float stepDurationLeft;
 
     private void Start()
     {
+        state = transform.root.GetComponent<SpiderState>();
+
         for (int i = 0; i < legAnchors.Length; i++)
         {
             legAnchors[i].position = legTargets[i].position;
