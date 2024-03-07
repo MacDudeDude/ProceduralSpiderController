@@ -25,6 +25,7 @@ public class PlayerOrientation : MonoBehaviour
     private Rigidbody rb;
 
     private Vector3 inputVector;
+    private bool isDescending;
 
     private Vector3 groundPoint;
     private Vector3 wallPoint;
@@ -44,6 +45,7 @@ public class PlayerOrientation : MonoBehaviour
     void Update()
     {
         GetInputVector();
+        GetInputs();
     }
 
     private void FixedUpdate()
@@ -55,12 +57,15 @@ public class PlayerOrientation : MonoBehaviour
 
     public Vector3 GetNewHeightPosition()
     {
-        return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength), heightMatchSpeed * Time.fixedDeltaTime);
+        if (!isDescending)
+            return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength), heightMatchSpeed * Time.fixedDeltaTime);
+        else
+            return rb.position - Vector3.up * 4f * Time.fixedDeltaTime;
     }
 
     private void SetUpRotation()
     {
-        var targetRotation = SpiderUpRotation(transform.forward, Vector3.Slerp(groundNormal, wallNormal, distanceToWall));
+        Quaternion targetRotation = SpiderUpRotation(transform.forward, Vector3.Slerp(groundNormal, wallNormal, distanceToWall));
         rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, rotationMatchSpeed * Time.fixedDeltaTime));
     }
 
@@ -93,6 +98,11 @@ public class PlayerOrientation : MonoBehaviour
         }
     }
 
+    private void GetInputs()
+    {
+        isDescending = Input.GetKey(KeyCode.LeftControl);
+    }
+
     private void GetInputVector()
     {
         if(useVelocityForWallCheck)
@@ -113,6 +123,14 @@ public class PlayerOrientation : MonoBehaviour
                 inputVector.y = 0;
                 inputVector.z = Input.GetAxisRaw("Vertical");
                 inputVector = absoulteRotationTransform.TransformDirection(inputVector);
+            }
+
+            if(isDescending)
+            {
+                inputVector.x = 0;
+                inputVector.y = -1;
+                inputVector.z = 0;
+                //inputVector = absoulteRotationTransform.TransformDirection(inputVector);
             }
         }
     }
@@ -153,12 +171,12 @@ public class PlayerOrientation : MonoBehaviour
         if (Physics.SphereCast(transform.position, wallCheckRadius, inputVector, out hitInfo, wallCheckDistance, walkableLayers))
         {
             Gizmos.color = Color.green;
-            Gizmos.DrawWireSphere(hitInfo.point, wallCheckRadius);
+            Gizmos.DrawSphere(hitInfo.point, wallCheckRadius);
         }
         else
         {
             Gizmos.color = Color.red;
-            Gizmos.DrawWireSphere(transform.position + (inputVector * wallCheckDistance), wallCheckRadius);
+            Gizmos.DrawSphere(transform.position + (inputVector * wallCheckDistance), wallCheckRadius);
         }
 
         Gizmos.color = Color.blue;
