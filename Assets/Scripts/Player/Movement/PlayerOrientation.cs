@@ -20,6 +20,8 @@ public class PlayerOrientation : MonoBehaviour
     [SerializeField] private float breathingSpeed;
     [SerializeField] private float breathingStrength;
 
+    [SerializeField] private bool useVelocityForWallCheck;
+
     private Rigidbody rb;
 
     private Vector3 inputVector;
@@ -93,22 +95,26 @@ public class PlayerOrientation : MonoBehaviour
 
     private void GetInputVector()
     {
-        //if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-        //{
-        //    inputVector.x = Input.GetAxisRaw("Horizontal");
-        //    inputVector.y = 0;
-        //    inputVector.z = Input.GetAxisRaw("Vertical");
-        //    inputVector = absoulteRotationTransform.TransformDirection(inputVector);
-        //}
-
-        Vector3 newInputVector = absoulteRotationTransform.InverseTransformVector((absoulteRotationTransform.position - previousPosition));
-        if (VectorIsNotZero(newInputVector))
+        if(useVelocityForWallCheck)
         {
-            newInputVector.y = 0;
-            inputVector = newInputVector.normalized;
-            inputVector = absoulteRotationTransform.TransformDirection(inputVector);
+            Vector3 newInputVector = absoulteRotationTransform.InverseTransformVector((absoulteRotationTransform.position - previousPosition));
+            if (VectorIsNotZero(newInputVector))
+            {
+                newInputVector.y = 0;
+                inputVector = newInputVector.normalized;
+                inputVector = absoulteRotationTransform.TransformDirection(inputVector);
+            }
+            previousPosition = absoulteRotationTransform.position;
+        }else
+        {
+            if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+            {
+                inputVector.x = Input.GetAxisRaw("Horizontal");
+                inputVector.y = 0;
+                inputVector.z = Input.GetAxisRaw("Vertical");
+                inputVector = absoulteRotationTransform.TransformDirection(inputVector);
+            }
         }
-        previousPosition = absoulteRotationTransform.position;
     }
 
     private bool VectorIsNotZero(Vector3 toCheck)

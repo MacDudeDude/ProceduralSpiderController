@@ -9,12 +9,14 @@ public class LegHandler : MonoBehaviour
     [SerializeField] private float legStepHeight;
     [SerializeField] private AnimationCurve legAnimationCurve;
     [SerializeField] private float stepDuration;
-    [SerializeField] private Vector3[] stepRays;
 
     [Header("Transforms")]
-    [SerializeField] private Transform bodyTranform;
+    [SerializeField] private Transform bodyTransform;
     [SerializeField] private Transform[] legTargets;
     [SerializeField] private Transform[] legAnchors;
+    [SerializeField] private Vector4[] stepRays;
+    [SerializeField] private Vector3[] stepRayPositions;
+
     [SerializeField] private LayerMask canStepLayers;
 
     private bool isStepping;
@@ -34,7 +36,7 @@ public class LegHandler : MonoBehaviour
     {
         UpdateLegPositions();
 
-        previousPosition = bodyTranform.position;
+        previousPosition = bodyTransform.position;
     }
 
     void UpdateLegPositions()
@@ -64,13 +66,29 @@ public class LegHandler : MonoBehaviour
 
     Vector3 GetNewLegPosition(Transform legPosition, Transform legAnchor)
     {
-        return legAnchor.position;
+        RaycastHit hitInfo;
+        if (Physics.Linecast(bodyTransform.position, legAnchor.position, out hitInfo, canStepLayers))
+            return hitInfo.point;
+
+        for (int r = 0; r < stepRays.Length; r++)
+        {
+            Vector3 rayPosition = legAnchor.position + bodyTransform.rotation * stepRayPositions[r];
+
+            Vector3 rayDir = stepRays[r];
+            rayDir = rayDir.normalized * stepRays[r].w;
+            rayDir = bodyTransform.rotation * rayDir;
+
+            if (Physics.Raycast(rayPosition, rayDir, out hitInfo, stepRays[r].w, canStepLayers))
+                return hitInfo.point;
+        }
+
+        return legPosition.position;
     }
 
     int GetLegGroup(int legNumber)
     {
-        if (legNumber > legTargets.Length / 2)
-            legNumber -= legTargets.Length / 2;
+        if (legNumber >= legTargets.Length / 2)
+            legNumber--;
 
         return legNumber % 2 == 0 ? 0 : 1;
     }
@@ -84,6 +102,9 @@ public class LegHandler : MonoBehaviour
             else
                 return GetLegGroup(legNumber) == legGroupStepping;
         }
+
+        if (GetLegGroup(legNumber) != legGroupStepping)
+            return false;
 
         isStepping = true;
         stepDurationLeft = stepDuration;
@@ -111,8 +132,6 @@ public class LegHandler : MonoBehaviour
 
     private void OnDrawGizmos()
     {
-
-
         Gizmos.color = Color.white;
         for (int i = 0; i < legAnchors.Length; i++)
         {
@@ -124,7 +143,13 @@ public class LegHandler : MonoBehaviour
         {
             for (int r = 0; r < stepRays.Length; r++)
             {
-                Gizmos.DrawRay(legAnchors[i].position, bodyTranform.rotation * stepRays[r]);
+                Vector3 rayPosition = legAnchors[i].position + bodyTransform.rotation * stepRayPositions[r];
+
+                Vector3 rayDir = stepRays[r];
+                rayDir = rayDir.normalized * stepRays[r].w;
+                rayDir = bodyTransform.rotation * rayDir;
+
+                Gizmos.DrawLine(rayPosition, rayPosition + rayDir);
             }
         }
     }
