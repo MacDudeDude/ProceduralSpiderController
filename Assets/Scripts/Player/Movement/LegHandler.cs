@@ -14,8 +14,8 @@ public class LegHandler : MonoBehaviour
     [SerializeField] private Transform bodyTransform;
     [SerializeField] private Transform[] legTargets;
     [SerializeField] private Transform[] legAnchors;
-    [SerializeField] private Vector4[] stepRays;
-    [SerializeField] private Vector3[] stepRayPositions;
+    [SerializeField] private float stepCollisionRadius;
+    [SerializeField] private int maxStepCollisionsCheck;
 
     [SerializeField] private LayerMask canStepLayers;
 
@@ -82,23 +82,34 @@ public class LegHandler : MonoBehaviour
 
     Vector3 GetNewLegPosition(Transform legPosition, Transform legAnchor)
     {
-        RaycastHit hitInfo;
-        if (Physics.Linecast(bodyTransform.position, legAnchor.position, out hitInfo, canStepLayers))
-            return hitInfo.point;
+        Collider[] hitColliders = new Collider[maxStepCollisionsCheck];
+        int numColliders = Physics.OverlapSphereNonAlloc(legAnchor.position, stepCollisionRadius, hitColliders, canStepLayers);
 
-        for (int r = 0; r < stepRays.Length; r++)
+        float searchSize = stepCollisionRadius;
+        while(numColliders == 0)
         {
-            Vector3 rayPosition = legAnchor.position + bodyTransform.rotation * stepRayPositions[r];
+            searchSize += stepCollisionRadius;
+            numColliders = Physics.OverlapSphereNonAlloc(legAnchor.position, searchSize, hitColliders, canStepLayers);
 
-            Vector3 rayDir = stepRays[r];
-            rayDir = rayDir.normalized * stepRays[r].w;
-            rayDir = bodyTransform.rotation * rayDir;
-
-            if (Physics.Raycast(rayPosition, rayDir, out hitInfo, stepRays[r].w, canStepLayers))
-                return hitInfo.point;
+            if (searchSize > stepCollisionRadius * 5)
+                break;
         }
 
-        return legPosition.position;
+        int closestCollider = 0;
+        float closestPoint = Mathf.Infinity;
+        for (int i = 0; i < numColliders; i++)
+        {
+            Vector3 hitPoint = hitColliders[i].ClosestPoint(legAnchor.position);
+            float distance = (legAnchor.position - hitPoint).magnitude;
+
+            if(distance < closestPoint)
+            {
+                closestPoint = distance;
+                closestCollider = i;
+            }
+        }
+
+        return numColliders > 0 ? hitColliders[closestCollider].ClosestPoint(legAnchor.position) : legAnchor.position;
     }
 
     int GetLegGroup(int legNumber)
@@ -153,16 +164,7 @@ public class LegHandler : MonoBehaviour
         Gizmos.color = Color.red;
         for (int i = 0; i < legAnchors.Length; i++)
         {
-            for (int r = 0; r < stepRays.Length; r++)
-            {
-                Vector3 rayPosition = legAnchors[i].position + bodyTransform.rotation * stepRayPositions[r];
-
-                Vector3 rayDir = stepRays[r];
-                rayDir = rayDir.normalized * stepRays[r].w;
-                rayDir = bodyTransform.rotation * rayDir;
-
-                Gizmos.DrawLine(rayPosition, rayPosition + rayDir);
-            }
+            Gizmos.DrawWireSphere(legAnchors[i].position, stepCollisionRadius);
         }
     }
 }
