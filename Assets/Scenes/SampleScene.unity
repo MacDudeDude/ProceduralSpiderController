@@ -1227,7 +1227,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &565001586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3184,7 +3184,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1111087986}
   - component: {fileID: 1111087987}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SpiderChildRotationMatcher
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3261,7 +3261,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1173448456}
   - component: {fileID: 1173448457}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: SpiderGraphics
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4848,7 +4848,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1994392715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4870,7 +4870,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1994392714}
   m_LocalRotation: {x: 0.0000001490116, y: 1.8370081e-14, z: 1.7271017e-15, w: 1}
-  m_LocalPosition: {x: 4.61, y: 4.1682305, z: 2.4323735}
+  m_LocalPosition: {x: 1.56, y: 9.08, z: -7.64}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 2102191941}
@@ -5347,7 +5347,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4746150737713247818}
   m_Layer: 10
-  m_Name: Bone.035
+  m_Name: RightFang
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5598,6 +5598,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 943877912005999761}
+  - component: {fileID: 1496722957642002211}
   m_Layer: 10
   m_Name: Head
   m_TagString: Untagged
@@ -5605,6 +5606,23 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1496722957642002211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1496722957642002210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: afd15dbe92e5fe34c89a28751ebdb79e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  leftFang: {fileID: 964344829974535948}
+  rightFang: {fileID: 4746150737713247818}
+  animMovement: 1
+  animSpeed: 5
+  speedModifier: 1
 --- !u!4 &1603863802704831867
 Transform:
   m_ObjectHideFlags: 0
@@ -6429,7 +6447,7 @@ GameObject:
   m_Component:
   - component: {fileID: 964344829974535948}
   m_Layer: 10
-  m_Name: Bone.037
+  m_Name: LeftFang
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6770,22 +6788,6 @@ MonoBehaviour:
   - {fileID: 1215070657}
   stepCollisionRadius: 3
   maxStepCollisionsCheck: 5
-  stepRays:
-  - {x: 0, y: 0, z: 1, w: 4}
-  - {x: 0, y: -1, z: 0, w: 4}
-  - {x: 0, y: -1, z: -1, w: 4}
-  - {x: 1.5, y: -1, z: -1, w: 4}
-  - {x: -1.5, y: -1, z: -1, w: 4}
-  - {x: 0, y: -1, z: 1, w: 4}
-  - {x: 0, y: -0.25, z: -1, w: 4}
-  stepRayPositions:
-  - {x: 0, y: 1, z: -2}
-  - {x: 0, y: 2, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0, z: 0}
-  - {x: 0, y: 0.5, z: -0.5}
-  - {x: 0, y: 0, z: 0}
   canStepLayers:
     serializedVersion: 2
     m_Bits: 55
