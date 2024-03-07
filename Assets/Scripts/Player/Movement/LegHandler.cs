@@ -22,7 +22,6 @@ public class LegHandler : MonoBehaviour
     private bool isStepping;
     private int legGroupStepping;
     private float stepDurationLeft;
-    private Vector3 previousPosition;
 
     private void Start()
     {
@@ -35,22 +34,39 @@ public class LegHandler : MonoBehaviour
     private void Update()
     {
         UpdateLegPositions();
-
-        previousPosition = bodyTransform.position;
     }
 
     void UpdateLegPositions()
     {
-        for (int i = 0; i < legTargets.Length; i++)
+        if(!isStepping)
         {
-            if (Vector3.Distance(legTargets[i].position, legAnchors[i].position) > maxLegDistance)
+            for (int i = 0; i < legTargets.Length; i++)
             {
-                if (LegCanStep(i))
+                if(GetLegGroup(i) == legGroupStepping)
                 {
-                    Vector3 newLegPosition = GetNewLegPosition(legTargets[i], legAnchors[i]);
-                    StartCoroutine(MoveLeg(legTargets[i], newLegPosition, legTargets[i].up, stepDurationLeft));
+                    if (Vector3.Distance(legTargets[i].position, legAnchors[i].position) > maxLegDistance)
+                    {
+                        MoveLegGroup(i);
+                        break;
+                    }
                 }
             }
+
+            if(!isStepping)
+            {
+                for (int i = 0; i < legTargets.Length; i++)
+                {
+                    if (GetLegGroup(i) != legGroupStepping)
+                    {
+                        if (Vector3.Distance(legTargets[i].position, legAnchors[i].position) > maxLegDistance)
+                        {
+                            MoveLegGroup(i);
+                            break;
+                        }
+                    }
+                }
+            }
+
         }
 
         if (isStepping)
@@ -93,24 +109,20 @@ public class LegHandler : MonoBehaviour
         return legNumber % 2 == 0 ? 0 : 1;
     }
 
-    bool LegCanStep(int legNumber)
+    void MoveLegGroup(int legNumber)
     {
-        if(isStepping)
-        {
-            if (stepDurationLeft < stepDuration / 2)
-                return false;
-            else
-                return GetLegGroup(legNumber) == legGroupStepping;
-        }
-
-        if (GetLegGroup(legNumber) != legGroupStepping)
-            return false;
-
         isStepping = true;
         stepDurationLeft = stepDuration;
 
-        return true;
-
+        legGroupStepping = GetLegGroup(legNumber);
+        for (int i = 0; i < legTargets.Length; i++)
+        {
+            if(GetLegGroup(i) == legGroupStepping)
+            {
+                Vector3 newLegPosition = GetNewLegPosition(legTargets[i], legAnchors[i]);
+                StartCoroutine(MoveLeg(legTargets[i], newLegPosition, bodyTransform.up, stepDurationLeft));
+            }
+        }
     }
 
     IEnumerator MoveLeg(Transform legTransform, Vector3 targetPosition, Vector3 legUp, float duration)

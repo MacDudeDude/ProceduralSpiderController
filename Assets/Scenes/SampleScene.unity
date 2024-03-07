@@ -6714,7 +6714,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b12750443b4a36f46b2d835caaed64e6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxLegDistance: 2
+  maxLegDistance: 3
   legStepHeight: 0.5
   legAnimationCurve:
     serializedVersion: 2
