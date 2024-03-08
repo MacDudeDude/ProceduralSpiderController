@@ -1227,7 +1227,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &565001586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1446,6 +1446,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 12
   bodyForward: {fileID: 1719654956}
+  bodyHead: {fileID: 565001587}
   collisionLayers:
     serializedVersion: 2
     m_Bits: 55
@@ -1493,7 +1494,7 @@ MonoBehaviour:
   height: 1
   breathingSpeed: 5
   breathingStrength: 0.1
-  useVelocityForWallCheck: 1
+  useVelocityForWallCheck: 0
 --- !u!1 &589044888
 GameObject:
   m_ObjectHideFlags: 0
@@ -4853,7 +4854,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1994392715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6785,7 +6786,7 @@ MonoBehaviour:
   - {fileID: 492848566}
   - {fileID: 1215070657}
   stepCollisionRadius: 3
-  maxStepCollisionsCheck: 5
+  maxStepCollisionsCheck: 15
   canStepLayers:
     serializedVersion: 2
     m_Bits: 55

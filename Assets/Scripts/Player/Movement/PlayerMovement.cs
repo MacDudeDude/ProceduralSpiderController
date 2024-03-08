@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private Transform bodyForward;
+    [SerializeField] private Transform bodyHead;
     [SerializeField] private LayerMask collisionLayers;
 
     private SpiderState state;
@@ -35,23 +36,31 @@ public class PlayerMovement : MonoBehaviour
         input.x = Input.GetAxisRaw("Horizontal");
         input.z = Input.GetAxisRaw("Vertical");
         input.Normalize();
-
-        if (state.currentState == SpiderState.MovementState.Descending)
-            input = Vector3.zero;
-
-        if (state.lockInputForces)
-            input = Vector3.zero;
     }
 
     private void Move()
     {
         Vector3 newPosition = bodyHandler.GetNewHeightPosition();
-        Vector3 forces = bodyForward.rotation * input * speed;
+        Vector3 forces = GetMovementForce();
 
         if (Physics.Linecast(rb.position, newPosition + forces * Time.fixedDeltaTime, collisionLayers))
             return;
 
         rb.MovePosition(newPosition + forces * Time.fixedDeltaTime);
+    }
+
+    private Vector3 GetMovementForce()
+    {
+        switch (state.currentState)
+        {
+            case SpiderState.MovementState.Falling:
+            case SpiderState.MovementState.Jumping:
+                return bodyHead.rotation * input * speed;
+            case SpiderState.MovementState.Descending:
+                return Vector3.zero;
+        }
+
+        return bodyForward.rotation * input * speed;
     }
 
     private void OnDrawGizmos()

@@ -44,6 +44,9 @@ public class PlayerOrientation : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         state = transform.root.GetComponent<SpiderState>();
+
+        wallNormal = Vector3.up;
+        wallPoint = transform.position;
     }
 
     // Update is called once per frame
@@ -80,9 +83,11 @@ public class PlayerOrientation : MonoBehaviour
 
         switch (state.currentState)
         {
-            case SpiderState.MovementState.Jumping:
             case SpiderState.MovementState.Falling:
-                targetRotation = SpiderUpRotation(transform.forward, Vector3.Lerp(transform.up, transform.forward, Mathf.InverseLerp(-maxFallSpeed, maxFallSpeed, fallingSpeed)));
+                targetRotation = SpiderUpRotation(transform.forward, Vector3.Lerp(transform.up, Vector3.up, 15 * Time.fixedDeltaTime));
+                break;
+            case SpiderState.MovementState.Jumping:
+                targetRotation = SpiderUpRotation(transform.forward, transform.up);
                 break;
             default:
                 break;
@@ -93,6 +98,9 @@ public class PlayerOrientation : MonoBehaviour
 
     private void CheckGround()
     {
+        if (state.currentState != SpiderState.MovementState.Jumping)
+            return;
+
         RaycastHit hitInfo;
         if (Physics.SphereCast(transform.position, groundCheckRadius, -transform.up, out hitInfo, groundCheckDistance, walkableLayers))
         {
@@ -130,8 +138,8 @@ public class PlayerOrientation : MonoBehaviour
                 inputVector.y = -Input.GetAxisRaw("Vertical");
                 inputVector.z = 0;
                 break;
-            case SpiderState.MovementState.Jumping:
             case SpiderState.MovementState.Falling:
+            case SpiderState.MovementState.Jumping:
                 Vector3 newInputVector = absoulteRotationTransform.position - previousPosition;
                 if (VectorIsNotZero(newInputVector))
                 {

@@ -82,10 +82,16 @@ public class SpiderState : MonoBehaviour
             {
                 legManager.ForceMoveAllLegs();
                 bodyManager.Land();
+
+                jumpBuffer = 0.25f;
+
                 isJumping = false;
+                isFalling = false;
             }
 
             jumpBuffer -= Time.deltaTime;
+            if (!isFalling && jumpBuffer < -1f)
+                isFalling = true;
         }
 
         lockInputForces = Input.GetKey(KeyCode.LeftControl);
@@ -93,7 +99,9 @@ public class SpiderState : MonoBehaviour
 
     private void ResolveState()
     {
-        if (isJumping)
+        if (isFalling)
+            currentState = MovementState.Falling;
+        else if (isJumping)
             currentState = MovementState.Jumping;
         else if (isDescending)
             currentState = MovementState.Descending;
