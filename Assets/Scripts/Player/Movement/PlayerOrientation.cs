@@ -82,7 +82,7 @@ public class PlayerOrientation : MonoBehaviour
         {
             case SpiderState.MovementState.Jumping:
             case SpiderState.MovementState.Falling:
-                targetRotation = SpiderUpRotation(transform.forward, Vector3.up);
+                targetRotation = SpiderUpRotation(transform.forward, Vector3.Lerp(transform.up, transform.forward, Mathf.InverseLerp(-maxFallSpeed, maxFallSpeed, fallingSpeed)));
                 break;
             default:
                 break;
@@ -202,6 +202,11 @@ public class PlayerOrientation : MonoBehaviour
         fallingSpeed = -maxFallSpeed;
         StopAllCoroutines();
         StartCoroutine(AnimateFallingSpeed(fallingSpeed * -1, 1));
+    }
+
+    public void Land()
+    {
+
     }
 
     IEnumerator AnimateFallingSpeed(float endValue, float duration)

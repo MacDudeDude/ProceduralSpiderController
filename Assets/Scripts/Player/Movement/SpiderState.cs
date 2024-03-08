@@ -18,6 +18,7 @@ public class SpiderState : MonoBehaviour
     public bool isGrounded;
     public bool onGroundGround;
     public bool wallDetected;
+    private float jumpBuffer;
 
     public bool lockInputForces;
     public MovementState currentState; //{ get; private set; } Uncomment later to ensure that this is only ever changed in this script
@@ -60,6 +61,7 @@ public class SpiderState : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             isJumping = true;
+            jumpBuffer = 0.25f;
             bodyManager.Jump();
         }
 
@@ -76,11 +78,14 @@ public class SpiderState : MonoBehaviour
 
         if(isJumping)
         {
-            if (wallDetected)
+            if (jumpBuffer < 0 && wallDetected)
             {
                 legManager.ForceMoveAllLegs();
+                bodyManager.Land();
                 isJumping = false;
             }
+
+            jumpBuffer -= Time.deltaTime;
         }
 
         lockInputForces = Input.GetKey(KeyCode.LeftControl);
