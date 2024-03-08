@@ -6,6 +6,7 @@ public class PlayerOrientation : MonoBehaviour
 {
     [SerializeField] private Transform absoulteRotationTransform;
 
+    [SerializeField] private float groundCheckLength;
     [SerializeField] private float groundCheckDistance;
     [SerializeField] private float groundCheckRadius;
 
@@ -13,6 +14,8 @@ public class PlayerOrientation : MonoBehaviour
     [SerializeField] private float wallCheckRadius;
 
     [SerializeField] private LayerMask walkableLayers;
+
+    [SerializeField] private float maxFallSpeed = 20f;
 
     [SerializeField] private float heightMatchSpeed;
     [SerializeField] private float rotationMatchSpeed;
@@ -35,6 +38,7 @@ public class PlayerOrientation : MonoBehaviour
     private float distanceToWall;
 
     private Vector3 previousPosition;
+    private float fallingSpeed;
 
     private void Start()
     {
@@ -59,11 +63,11 @@ public class PlayerOrientation : MonoBehaviour
     {
         switch (state.currentState)
         {
-            case SpiderState.MovementState.Jumping:
-                return Vector3.zero;
             case SpiderState.MovementState.Descending:
-                return rb.position - Vector3.up * 4f * Time.fixedDeltaTime;
-
+                return rb.position - Vector3.up * 5f * -inputVector.y * Time.fixedDeltaTime;
+            case SpiderState.MovementState.Jumping:
+            case SpiderState.MovementState.Falling:
+                return rb.position - Vector3.Lerp(groundNormal, Vector3.up, Mathf.InverseLerp(-maxFallSpeed, maxFallSpeed, fallingSpeed)) * fallingSpeed * Time.fixedDeltaTime;
             case SpiderState.MovementState.Default:
             default:
                 return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength), heightMatchSpeed * Time.fixedDeltaTime);
@@ -73,6 +77,17 @@ public class PlayerOrientation : MonoBehaviour
     private void SetUpRotation()
     {
         Quaternion targetRotation = SpiderUpRotation(transform.forward, Vector3.Slerp(groundNormal, wallNormal, distanceToWall));
+
+        switch (state.currentState)
+        {
+            case SpiderState.MovementState.Jumping:
+            case SpiderState.MovementState.Falling:
+                targetRotation = SpiderUpRotation(transform.forward, Vector3.up);
+                break;
+            default:
+                break;
+        }
+
         rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, rotationMatchSpeed * Time.fixedDeltaTime));
     }
 
@@ -86,7 +101,8 @@ public class PlayerOrientation : MonoBehaviour
         }
         else
         {
-
+            groundPoint = wallPoint;
+            groundNormal = wallNormal;
         }
     }
 
@@ -107,39 +123,52 @@ public class PlayerOrientation : MonoBehaviour
 
     private void GetInputVector()
     {
-        if(useVelocityForWallCheck)
+        switch (state.currentState)
         {
-            Vector3 newInputVector = absoulteRotationTransform.InverseTransformVector((absoulteRotationTransform.position - previousPosition));
-            if (VectorIsNotZero(newInputVector))
-            {
-                newInputVector.y = 0;
-                inputVector = newInputVector.normalized;
-                inputVector = absoulteRotationTransform.TransformDirection(inputVector);
-            }
-            previousPosition = absoulteRotationTransform.position;
-        }else
-        {
-            if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
-            {
-                inputVector.x = Input.GetAxisRaw("Horizontal");
-                inputVector.y = 0;
-                inputVector.z = Input.GetAxisRaw("Vertical");
-                inputVector = absoulteRotationTransform.TransformDirection(inputVector);
-            }
-
-            if(state.currentState == SpiderState.MovementState.Descending)
-            {
+            case SpiderState.MovementState.Descending:
                 inputVector.x = 0;
-                inputVector.y = -1;
+                inputVector.y = -Input.GetAxisRaw("Vertical");
                 inputVector.z = 0;
-                //inputVector = absoulteRotationTransform.TransformDirection(inputVector);
-            }
+                break;
+            case SpiderState.MovementState.Jumping:
+            case SpiderState.MovementState.Falling:
+                Vector3 newInputVector = absoulteRotationTransform.position - previousPosition;
+                if (VectorIsNotZero(newInputVector))
+                {
+                    inputVector = newInputVector.normalized;
+                }
+                previousPosition = absoulteRotationTransform.position;
+                break;
+            case SpiderState.MovementState.Default:
+            default:
+                if (useVelocityForWallCheck)
+                {
+                    newInputVector = absoulteRotationTransform.position - previousPosition;
+                    if (VectorIsNotZero(newInputVector))
+                    {
+                        inputVector = newInputVector.normalized;
+                    }
+                    previousPosition = absoulteRotationTransform.position;
+                }
+                else
+                {
+                    if (Input.GetAxisRaw("Horizontal") != 0 || Input.GetAxisRaw("Vertical") != 0)
+                    {
+                        inputVector.x = Input.GetAxisRaw("Horizontal");
+                        inputVector.y = 0;
+                        inputVector.z = Input.GetAxisRaw("Vertical");
+                        inputVector = absoulteRotationTransform.TransformDirection(inputVector);
+                    }
+                }
+                break;
         }
     }
 
     private bool VectorIsNotZero(Vector3 toCheck)
     {
         if (Mathf.Abs(toCheck.x) > 0.05f)
+            return true;
+        if (Mathf.Abs(toCheck.y) > 0.05f)
             return true;
         if (Mathf.Abs(toCheck.z) > 0.05f)
             return true;
@@ -152,6 +181,42 @@ public class PlayerOrientation : MonoBehaviour
         Quaternion zToUp = Quaternion.LookRotation(exactUp, -approximateForward);
         Quaternion yToz = Quaternion.Euler(90, 0, 0);
         return zToUp * yToz;
+    }
+
+    public bool IsGrounded(out bool spiderOnGroundGround)
+    {
+        spiderOnGroundGround = Vector3.Dot(transform.up, Vector3.up) > 0.9f;
+
+        RaycastHit hitInfo;
+        return Physics.SphereCast(transform.position, groundCheckRadius, -transform.up, out hitInfo, groundCheckLength, walkableLayers);
+    }
+
+    public bool WallGrounded()
+    {
+        RaycastHit hitInfo;
+        return Physics.SphereCast(transform.position, wallCheckRadius, inputVector, out hitInfo, groundCheckLength, walkableLayers);
+    }
+
+    public void Jump()
+    {
+        fallingSpeed = -maxFallSpeed;
+        StopAllCoroutines();
+        StartCoroutine(AnimateFallingSpeed(fallingSpeed * -1, 1));
+    }
+
+    IEnumerator AnimateFallingSpeed(float endValue, float duration)
+    {
+        float time = 0;
+        float startValue = fallingSpeed;
+
+        while (time < duration)
+        {
+            fallingSpeed = Mathf.Lerp(startValue, endValue, time / duration);
+            time += Time.deltaTime;
+            yield return null;
+        }
+
+        fallingSpeed = endValue;
     }
 
     private void OnDrawGizmos()

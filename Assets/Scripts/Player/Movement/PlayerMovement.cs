@@ -6,6 +6,7 @@ public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed;
     [SerializeField] private Transform bodyForward;
+    [SerializeField] private LayerMask collisionLayers;
 
     private SpiderState state;
     private PlayerOrientation bodyHandler;
@@ -34,12 +35,22 @@ public class PlayerMovement : MonoBehaviour
         input.x = Input.GetAxisRaw("Horizontal");
         input.z = Input.GetAxisRaw("Vertical");
         input.Normalize();
+
+        if (state.currentState == SpiderState.MovementState.Descending)
+            input = Vector3.zero;
+
+        if (state.lockInputForces)
+            input = Vector3.zero;
     }
 
     private void Move()
     {
         Vector3 newPosition = bodyHandler.GetNewHeightPosition();
         Vector3 forces = bodyForward.rotation * input * speed;
+
+        if (Physics.Linecast(rb.position, newPosition + forces * Time.fixedDeltaTime, collisionLayers))
+            return;
+
         rb.MovePosition(newPosition + forces * Time.fixedDeltaTime);
     }
 

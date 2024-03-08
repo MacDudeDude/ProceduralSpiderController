@@ -1227,7 +1227,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &565001586
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1446,6 +1446,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 12
   bodyForward: {fileID: 1719654956}
+  collisionLayers:
+    serializedVersion: 2
+    m_Bits: 55
 --- !u!114 &580520464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1476,19 +1479,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   absoulteRotationTransform: {fileID: 1719654956}
+  groundCheckLength: 2
   groundCheckDistance: 4
-  groundCheckRadius: 0.5
+  groundCheckRadius: 0.45
   wallCheckDistance: 4
-  wallCheckRadius: 0.5
+  wallCheckRadius: 0.45
   walkableLayers:
     serializedVersion: 2
     m_Bits: 55
+  maxFallSpeed: 35
   heightMatchSpeed: 2
   rotationMatchSpeed: 10
   height: 1
   breathingSpeed: 5
   breathingStrength: 0.1
-  useVelocityForWallCheck: 0
+  useVelocityForWallCheck: 1
 --- !u!1 &589044888
 GameObject:
   m_ObjectHideFlags: 0
@@ -4848,7 +4853,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1994392715
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5077,7 +5082,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2102191941}
   - component: {fileID: 2102191944}
-  - component: {fileID: 2102191943}
   - component: {fileID: 2102191942}
   m_Layer: 0
   m_Name: Main Camera
@@ -5132,14 +5136,6 @@ MonoBehaviour:
   m_RequiresDepthTexture: 0
   m_RequiresColorTexture: 0
   m_Version: 2
---- !u!81 &2102191943
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2102191940}
-  m_Enabled: 1
 --- !u!20 &2102191944
 Camera:
   m_ObjectHideFlags: 0
@@ -6767,7 +6763,8 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  stepDuration: 0.15
+  stepDuration: 0.12
+  legMatchSpeed: 15
   bodyTransform: {fileID: 1719654956}
   legTargets:
   - {fileID: 1189872792}
@@ -6792,6 +6789,7 @@ MonoBehaviour:
   canStepLayers:
     serializedVersion: 2
     m_Bits: 55
+  debug: 0
 --- !u!114 &6376737975680427044
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6804,6 +6802,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: df38c6a405dfe6e4f863aba93624191e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isGrounded: 0
+  onGroundGround: 0
+  wallDetected: 0
+  lockInputForces: 0
   currentState: 0
 --- !u!4 &6433163348143069743
 Transform:

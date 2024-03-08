@@ -9,6 +9,7 @@ public class LegHandler : MonoBehaviour
     [SerializeField] private float legStepHeight;
     [SerializeField] private AnimationCurve legAnimationCurve;
     [SerializeField] private float stepDuration;
+    [SerializeField] private float legMatchSpeed;
 
     [Header("Transforms")]
     [SerializeField] private Transform bodyTransform;
@@ -18,6 +19,9 @@ public class LegHandler : MonoBehaviour
     [SerializeField] private int maxStepCollisionsCheck;
 
     [SerializeField] private LayerMask canStepLayers;
+
+    [Header("Debugging")]
+    [SerializeField] private bool debug;
 
     private SpiderState state;
 
@@ -35,9 +39,29 @@ public class LegHandler : MonoBehaviour
         }
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        UpdateLegPositions();
+        switch (state.currentState)
+        {
+            case SpiderState.MovementState.Jumping:
+            case SpiderState.MovementState.Falling:
+                MatchLegPositions();
+                break;
+            case SpiderState.MovementState.Descending:
+            case SpiderState.MovementState.Default:
+            default:
+                UpdateLegPositions();
+                break;
+        }
+    }
+
+    void MatchLegPositions()
+    {
+        for (int i = 0; i < legTargets.Length; i++)
+        {
+            legTargets[i].position = Vector3.Lerp(legTargets[i].position, 
+                legAnchors[i].position + (bodyTransform.position - legAnchors[i].position).normalized * -1.5f - Vector3.up * 1, legMatchSpeed * Time.fixedDeltaTime);
+        }
     }
 
     void UpdateLegPositions()
@@ -75,7 +99,7 @@ public class LegHandler : MonoBehaviour
 
         if (isStepping)
         {
-            stepDurationLeft -= Time.deltaTime;
+            stepDurationLeft -= Time.fixedDeltaTime;
             if(stepDurationLeft <= 0)
             {
                 isStepping = false;
@@ -86,6 +110,17 @@ public class LegHandler : MonoBehaviour
 
     Vector3 GetNewLegPosition(Transform legPosition, Transform legAnchor)
     {
+        switch (state.currentState)
+        {
+            case SpiderState.MovementState.Descending:
+                if(!state.isGrounded)
+                    return bodyTransform.position + Vector3.up * 3;
+                break;
+            case SpiderState.MovementState.Default:
+            default:
+                break;
+        }
+
         Collider[] hitColliders = new Collider[maxStepCollisionsCheck];
         int numColliders = Physics.OverlapSphereNonAlloc(legAnchor.position, stepCollisionRadius, hitColliders, canStepLayers);
 
@@ -157,8 +192,23 @@ public class LegHandler : MonoBehaviour
         legTransform.position = targetPosition;
     }
 
+    public void ForceMoveAllLegs()
+    {
+        isStepping = true;
+        stepDurationLeft = stepDuration;
+
+        for (int i = 0; i < legTargets.Length; i++)
+        {
+            Vector3 newLegPosition = GetNewLegPosition(legTargets[i], legAnchors[i]);
+            StartCoroutine(MoveLeg(legTargets[i], newLegPosition, bodyTransform.up, stepDurationLeft));
+        }
+    }
+
     private void OnDrawGizmos()
     {
+        if(!debug)
+            return;
+
         Gizmos.color = Color.white;
         for (int i = 0; i < legAnchors.Length; i++)
         {
