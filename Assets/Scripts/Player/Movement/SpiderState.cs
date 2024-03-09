@@ -62,7 +62,7 @@ public class SpiderState : MonoBehaviour
         {
             isJumping = true;
             isDescending = false;
-            jumpBuffer = 0.25f;
+            jumpBuffer = 0.1f;
             bodyManager.Jump();
         }
     }
@@ -82,14 +82,14 @@ public class SpiderState : MonoBehaviour
                 legManager.ForceMoveAllLegs();
                 bodyManager.Land();
 
-                jumpBuffer = 0.25f;
+                jumpBuffer = 0.1f;
 
                 isJumping = false;
                 isFalling = false;
             }
 
             jumpBuffer -= Time.deltaTime;
-            if (!isFalling && jumpBuffer < -1f)
+            if (!isFalling && jumpBuffer < -2f)
                 isFalling = true;
         }
     }

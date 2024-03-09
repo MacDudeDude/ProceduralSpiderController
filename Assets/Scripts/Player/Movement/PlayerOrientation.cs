@@ -67,7 +67,7 @@ public class PlayerOrientation : MonoBehaviour
         switch (state.currentState)
         {
             case SpiderState.MovementState.Descending:
-                return rb.position - Vector3.up * 5f * -inputVector.y * Time.fixedDeltaTime;
+                return rb.position - Vector3.up * 12f * -inputVector.y * Time.fixedDeltaTime;
             case SpiderState.MovementState.Jumping:
             case SpiderState.MovementState.Falling:
                 return rb.position - Vector3.Lerp(groundNormal, Vector3.up, Mathf.InverseLerp(-maxFallSpeed, maxFallSpeed, fallingSpeed)) * fallingSpeed * Time.fixedDeltaTime;
