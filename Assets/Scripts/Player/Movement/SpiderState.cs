@@ -50,7 +50,7 @@ public class SpiderState : MonoBehaviour
 
     private void GetEnterInput()
     {
-        if (isDescending || isFalling || isJumping)
+        if (isFalling || isJumping)
             return;
 
         if(Input.GetKeyDown(KeyCode.LeftControl) && !onGroundGround)
@@ -58,14 +58,13 @@ public class SpiderState : MonoBehaviour
             isDescending = true;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space) && (isGrounded || isDescending))
         {
             isJumping = true;
+            isDescending = false;
             jumpBuffer = 0.25f;
             bodyManager.Jump();
         }
-
-        lockInputForces = Input.GetKey(KeyCode.LeftControl);
     }
 
     private void GetExitInput()
@@ -76,9 +75,9 @@ public class SpiderState : MonoBehaviour
                 isDescending = false;
         }
 
-        if(isJumping)
+        if(isJumping || isFalling)
         {
-            if (jumpBuffer < 0 && wallDetected)
+            if (jumpBuffer < 0 && ( wallDetected || isGrounded))
             {
                 legManager.ForceMoveAllLegs();
                 bodyManager.Land();
@@ -93,8 +92,6 @@ public class SpiderState : MonoBehaviour
             if (!isFalling && jumpBuffer < -1f)
                 isFalling = true;
         }
-
-        lockInputForces = Input.GetKey(KeyCode.LeftControl);
     }
 
     private void ResolveState()
