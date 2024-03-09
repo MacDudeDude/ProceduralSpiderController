@@ -15,7 +15,10 @@ public class PlayerOrientation : MonoBehaviour
 
     [SerializeField] private LayerMask walkableLayers;
 
+    [SerializeField] private float descendSpeed = 12f;
+    [SerializeField] private float jumpDuration = 1f;
     [SerializeField] private float maxFallSpeed = 20f;
+    [SerializeField] private float walkEffectStrength = 4f;
 
     [SerializeField] private float heightMatchSpeed;
     [SerializeField] private float rotationMatchSpeed;
@@ -69,14 +72,14 @@ public class PlayerOrientation : MonoBehaviour
         switch (state.currentState)
         {
             case SpiderState.MovementState.Descending:
-                return rb.position - Vector3.up * 12f * -inputVector.y * Time.fixedDeltaTime;
+                return rb.position - Vector3.up * descendSpeed * -inputVector.y * Time.fixedDeltaTime;
             case SpiderState.MovementState.Jumping:
             case SpiderState.MovementState.Falling:
                 return rb.position - Vector3.Lerp(groundNormal, Vector3.up, Mathf.InverseLerp(-maxFallSpeed, maxFallSpeed, fallingSpeed)) * fallingSpeed * Time.fixedDeltaTime;
             case SpiderState.MovementState.Default:
             default:
                 return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * 
-                    (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength + legHandler.GetAverageLegHeight(height) * 4), 
+                    (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength + legHandler.GetAverageLegHeight(height) * walkEffectStrength), 
                     heightMatchSpeed * Time.fixedDeltaTime);
         }
     }
@@ -213,7 +216,7 @@ public class PlayerOrientation : MonoBehaviour
     {
         fallingSpeed = -maxFallSpeed;
         StopAllCoroutines();
-        StartCoroutine(AnimateFallingSpeed(fallingSpeed * -1, 1));
+        StartCoroutine(AnimateFallingSpeed(fallingSpeed * -1, jumpDuration));
     }
 
     public void Land()

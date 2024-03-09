@@ -12,16 +12,18 @@ public class SpiderState : MonoBehaviour
         Falling
     }
 
+    public MovementState currentState; //{ get; private set; }
+    public bool isGrounded; //{ get; private set; }
+    public bool onGroundGround; //{ get; private set; }
+    public bool wallDetected; //{ get; private set; }
+
     private bool isDescending;
     private bool isJumping;
     private bool isFalling;
-    public bool isGrounded;
-    public bool onGroundGround;
-    public bool wallDetected;
+
     private float jumpBuffer;
 
     public bool lockInputForces;
-    public MovementState currentState; //{ get; private set; } Uncomment later to ensure that this is only ever changed in this script
 
     private PlayerOrientation bodyManager;
     private LegHandler legManager;
@@ -44,8 +46,10 @@ public class SpiderState : MonoBehaviour
 
     private void GetInfo()
     {
-        isGrounded = bodyManager.IsGrounded(out onGroundGround);
+        bool groundyGround;
+        isGrounded = bodyManager.IsGrounded(out groundyGround);
         wallDetected = bodyManager.WallGrounded();
+        onGroundGround = groundyGround;
     }
 
     private void GetEnterInput()
