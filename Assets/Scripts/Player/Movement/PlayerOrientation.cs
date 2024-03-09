@@ -98,7 +98,7 @@ public class PlayerOrientation : MonoBehaviour
 
     private void CheckGround()
     {
-        if (state.currentState != SpiderState.MovementState.Jumping)
+        if (state.currentState == SpiderState.MovementState.Jumping)
             return;
 
         RaycastHit hitInfo;
