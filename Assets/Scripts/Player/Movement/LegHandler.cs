@@ -74,7 +74,7 @@ public class LegHandler : MonoBehaviour
         for (int i = 0; i < legTargets.Length; i++)
         {
             legTargets[i].position = Vector3.Lerp(legTargets[i].position, 
-                legAnchors[i].position + (bodyTransform.position - legAnchors[i].position).normalized * -1.5f - Vector3.up * 1, legMatchSpeed * Time.fixedDeltaTime);
+                legAnchors[i].position + (bodyTransform.position - legAnchors[i].position).normalized * ((i == 0 || i == 4) ? 0 : -1.5f) - Vector3.up * ((i == 0 || i == 4) ? 0 : 1), legMatchSpeed * Time.fixedDeltaTime);
         }
     }
 
