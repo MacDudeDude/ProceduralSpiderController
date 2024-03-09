@@ -55,6 +55,20 @@ public class LegHandler : MonoBehaviour
         }
     }
 
+    public float GetAverageLegHeight(float height)
+    {
+        float averageLegHeight = 0;
+
+        for (int i = 0; i < legTargets.Length; i++)
+        {
+            averageLegHeight += bodyTransform.InverseTransformPoint(legTargets[i].position).y;
+        }
+
+        averageLegHeight /= legTargets.Length;
+
+        return averageLegHeight + height;
+    }
+
     void MatchLegPositions()
     {
         for (int i = 0; i < legTargets.Length; i++)

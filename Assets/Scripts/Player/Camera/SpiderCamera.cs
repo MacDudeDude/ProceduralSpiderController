@@ -5,6 +5,8 @@ using UnityEngine;
 public class SpiderCamera : MonoBehaviour
 {
     [SerializeField] private Transform spiderHead;
+    [SerializeField] private bool smooth;
+    [SerializeField] private float smoothness;
 
     private void Update()
     {
@@ -14,7 +16,15 @@ public class SpiderCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        transform.position = spiderHead.position;
-        transform.rotation = spiderHead.rotation;
+        if(smooth)
+        {
+            transform.position = Vector3.Lerp(transform.position, spiderHead.position, smoothness * Time.deltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, spiderHead.rotation, smoothness * Time.deltaTime);
+        }
+        else
+        {
+            transform.position = spiderHead.position;
+            transform.rotation = spiderHead.rotation;
+        }
     }
 }

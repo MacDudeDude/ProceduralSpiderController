@@ -26,6 +26,7 @@ public class PlayerOrientation : MonoBehaviour
     [SerializeField] private bool useVelocityForWallCheck;
 
     private Rigidbody rb;
+    private LegHandler legHandler;
     private SpiderState state;
 
     private Vector3 inputVector;
@@ -43,6 +44,7 @@ public class PlayerOrientation : MonoBehaviour
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        legHandler = GetComponentInParent<LegHandler>();
         state = transform.root.GetComponent<SpiderState>();
 
         wallNormal = Vector3.up;
@@ -73,7 +75,7 @@ public class PlayerOrientation : MonoBehaviour
                 return rb.position - Vector3.Lerp(groundNormal, Vector3.up, Mathf.InverseLerp(-maxFallSpeed, maxFallSpeed, fallingSpeed)) * fallingSpeed * Time.fixedDeltaTime;
             case SpiderState.MovementState.Default:
             default:
-                return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength), heightMatchSpeed * Time.fixedDeltaTime);
+                return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + legHandler.GetAverageLegHeight(height) * 4), heightMatchSpeed * Time.fixedDeltaTime);
         }
     }
 
