@@ -75,7 +75,9 @@ public class PlayerOrientation : MonoBehaviour
                 return rb.position - Vector3.Lerp(groundNormal, Vector3.up, Mathf.InverseLerp(-maxFallSpeed, maxFallSpeed, fallingSpeed)) * fallingSpeed * Time.fixedDeltaTime;
             case SpiderState.MovementState.Default:
             default:
-                return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * (height + legHandler.GetAverageLegHeight(height) * 4), heightMatchSpeed * Time.fixedDeltaTime);
+                return Vector3.Lerp(rb.position, groundPoint + Vector3.Slerp(groundNormal, wallNormal, distanceToWall) * 
+                    (height + Mathf.Sin(Time.time * breathingSpeed) * breathingStrength + legHandler.GetAverageLegHeight(height) * 4), 
+                    heightMatchSpeed * Time.fixedDeltaTime);
         }
     }
 
