@@ -77,8 +77,9 @@ public class PlayerOrientation : MonoBehaviour
         {
             case SpiderState.MovementState.Descending:
                 return rb.position - Vector3.up * descendSpeed * -inputVector.y * Time.fixedDeltaTime;
-            case SpiderState.MovementState.Jumping:
             case SpiderState.MovementState.Falling:
+                return rb.position - Vector3.up * maxFallSpeed * Time.fixedDeltaTime;
+            case SpiderState.MovementState.Jumping:
                 return rb.position - Vector3.Lerp(groundNormal, Vector3.up, Mathf.InverseLerp(-maxFallSpeed, maxFallSpeed, fallingSpeed)) * fallingSpeed * Time.fixedDeltaTime;
             case SpiderState.MovementState.Default:
             default:
@@ -248,6 +249,11 @@ public class PlayerOrientation : MonoBehaviour
     public void Land()
     {
 
+    }
+
+    public Transform GetPlatformObject()
+    {
+        return groundObject;
     }
 
     public Vector3 GetPlatformOffset()

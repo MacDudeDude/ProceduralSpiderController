@@ -29,15 +29,19 @@ public class SpiderCamera : MonoBehaviour
 
     private void LateUpdate()
     {
-        if(smooth)
-        {
-            transform.position = Vector3.Lerp(transform.position, spiderHead.position, smoothness * Time.deltaTime);
-            transform.rotation = Quaternion.Lerp(transform.rotation, spiderHead.rotation, smoothness * Time.deltaTime);
-        }
-        else
+        if (!smooth)
         {
             transform.position = spiderHead.position;
             transform.rotation = spiderHead.rotation;
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        if (smooth)
+        {
+            transform.position = Vector3.Lerp(transform.position, spiderHead.position, smoothness * Time.fixedDeltaTime);
+            transform.rotation = Quaternion.Lerp(transform.rotation, spiderHead.rotation, smoothness * Time.fixedDeltaTime);
         }
     }
 }

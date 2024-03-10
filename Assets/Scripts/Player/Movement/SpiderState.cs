@@ -113,6 +113,9 @@ public class SpiderState : MonoBehaviour
 
         biteCooldown -= Time.deltaTime;
         biteBuffer -= Time.deltaTime;
+
+        //if (!isFalling && !isDescending && !isJumping && !isGrounded && !wallDetected)
+        //    isFalling = true;
     }
 
     private void ResolveState()
