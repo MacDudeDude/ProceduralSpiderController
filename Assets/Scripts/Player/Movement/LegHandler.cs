@@ -33,7 +33,7 @@ public class LegHandler : MonoBehaviour
     private void Start()
     {
         state = transform.root.GetComponent<SpiderState>();
-        bodyManager = GetComponent<PlayerOrientation>();
+        bodyManager = GetComponentInChildren<PlayerOrientation>();
 
         for (int i = 0; i < legAnchors.Length; i++)
         {
@@ -50,9 +50,13 @@ public class LegHandler : MonoBehaviour
                 MatchLegPositions();
                 break;
             case SpiderState.MovementState.Descending:
+                UpdateLegPositions();
+                AddMovingPlatformOffset();
+                break;
             case SpiderState.MovementState.Default:
             default:
                 UpdateLegPositions();
+                AddMovingPlatformOffset();
                 break;
         }
     }
@@ -69,6 +73,15 @@ public class LegHandler : MonoBehaviour
         averageLegHeight /= legTargets.Length;
 
         return Mathf.Clamp01(averageLegHeight + height);
+    }
+
+    private void AddMovingPlatformOffset()
+    {
+        Vector3 platformOffset = bodyManager.GetPlatformOffset();
+        for (int i = 0; i < legTargets.Length; i++)
+        {
+            legTargets[i].position = legTargets[i].position + platformOffset;
+        }
     }
 
     void MatchLegPositions()

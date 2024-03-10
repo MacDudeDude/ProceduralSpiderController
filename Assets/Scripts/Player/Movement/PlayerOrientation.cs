@@ -136,6 +136,10 @@ public class PlayerOrientation : MonoBehaviour
             {
                 groundObject = null;
                 groundObjectOffset = Vector3.zero;
+            }else
+            {
+                groundObjectOffset = groundObject.position - groundObjectPreviousPosition;
+                groundObjectPreviousPosition = groundObject.position;
             }
         }
     }
