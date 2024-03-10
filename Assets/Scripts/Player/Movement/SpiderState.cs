@@ -21,18 +21,22 @@ public class SpiderState : MonoBehaviour
     private bool isJumping;
     private bool isFalling;
 
+    private float biteBuffer;
+    private float biteCooldown;
     private float jumpBuffer;
 
     public bool lockInputForces;
 
     private PlayerOrientation bodyManager;
     private LegHandler legManager;
+    private FangControllers fangManager;
 
     // Start is called before the first frame update
     void Start()
     {
         bodyManager = GetComponentInChildren<PlayerOrientation>();
         legManager = GetComponentInChildren<LegHandler>();
+        fangManager = GetComponentInChildren<FangControllers>();
     }
 
     // Update is called once per frame
@@ -54,10 +58,20 @@ public class SpiderState : MonoBehaviour
 
     private void GetEnterInput()
     {
+        if (Input.GetMouseButtonDown(0))
+            biteBuffer = 0.1f;
+
+        if (biteBuffer > 0 && biteCooldown < 0)
+        {
+            fangManager.Bite();
+            biteBuffer = 0;
+            biteCooldown = 0.2f;
+        }
+
         if (isFalling || isJumping)
             return;
 
-        if(Input.GetKeyDown(KeyCode.LeftControl) && !onGroundGround)
+        if(Input.GetKeyDown(KeyCode.C) && !onGroundGround)
         {
             isDescending = true;
         }
@@ -73,7 +87,7 @@ public class SpiderState : MonoBehaviour
 
     private void GetExitInput()
     {
-        if (isDescending && !Input.GetKey(KeyCode.LeftControl) || onGroundGround)
+        if (isDescending && !Input.GetKey(KeyCode.C) || onGroundGround)
         {
             if (isGrounded)
                 isDescending = false;
@@ -96,6 +110,9 @@ public class SpiderState : MonoBehaviour
             if (!isFalling && jumpBuffer < -2f)
                 isFalling = true;
         }
+
+        biteCooldown -= Time.deltaTime;
+        biteBuffer -= Time.deltaTime;
     }
 
     private void ResolveState()

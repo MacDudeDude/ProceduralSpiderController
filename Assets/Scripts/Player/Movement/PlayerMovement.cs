@@ -41,12 +41,13 @@ public class PlayerMovement : MonoBehaviour
     private void Move()
     {
         Vector3 newPosition = bodyHandler.GetNewHeightPosition();
+        Vector3 movingPlatformOffset = bodyHandler.GetPlatformOffset();
         Vector3 forces = GetMovementForce();
 
-        if (Physics.Linecast(rb.position, newPosition + forces * Time.fixedDeltaTime, collisionLayers))
+        if (Physics.Linecast(rb.position, newPosition + movingPlatformOffset + forces * Time.fixedDeltaTime, collisionLayers))
             return;
 
-        rb.MovePosition(newPosition + forces * Time.fixedDeltaTime);
+        rb.MovePosition(newPosition + movingPlatformOffset + forces * Time.fixedDeltaTime);
     }
 
     private Vector3 GetMovementForce()

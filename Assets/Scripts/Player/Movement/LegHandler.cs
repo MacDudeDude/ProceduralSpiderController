@@ -24,6 +24,7 @@ public class LegHandler : MonoBehaviour
     [SerializeField] private bool debug;
 
     private SpiderState state;
+    private PlayerOrientation bodyManager;
 
     private bool isStepping;
     private int legGroupStepping;
@@ -32,6 +33,7 @@ public class LegHandler : MonoBehaviour
     private void Start()
     {
         state = transform.root.GetComponent<SpiderState>();
+        bodyManager = GetComponent<PlayerOrientation>();
 
         for (int i = 0; i < legAnchors.Length; i++)
         {
@@ -63,10 +65,10 @@ public class LegHandler : MonoBehaviour
         {
             averageLegHeight += bodyTransform.InverseTransformPoint(legTargets[i].position).y;
         }
-
+        
         averageLegHeight /= legTargets.Length;
 
-        return averageLegHeight + height;
+        return Mathf.Clamp01(averageLegHeight + height);
     }
 
     void MatchLegPositions()

@@ -34,11 +34,15 @@ public class PlayerOrientation : MonoBehaviour
 
     private Vector3 inputVector;
 
-    private Vector3 groundPoint;
-    private Vector3 wallPoint;
+    private Transform groundObject;
+    private Vector3 groundObjectOffset;
+    private Vector3 groundObjectPreviousPosition;
 
+    private Vector3 groundPoint;
     private Vector3 groundNormal;
+    private Vector3 wallPoint;
     private Vector3 wallNormal;
+
     private float distanceToWall;
 
     private Vector3 previousPosition;
@@ -113,11 +117,26 @@ public class PlayerOrientation : MonoBehaviour
         {
             groundPoint = hitInfo.point;
             groundNormal = hitInfo.normal;
+
+            if(groundObject == null || groundObject != hitInfo.transform)
+            {
+                groundObject = hitInfo.transform;
+                groundObjectPreviousPosition = groundObject.position;
+            }
+
+            groundObjectOffset = groundObject.position - groundObjectPreviousPosition;
+            groundObjectPreviousPosition = groundObject.position;
         }
         else
         {
             groundPoint = wallPoint;
             groundNormal = wallNormal;
+
+            if(state.currentState != SpiderState.MovementState.Descending)
+            {
+                groundObject = null;
+                groundObjectOffset = Vector3.zero;
+            }
         }
     }
 
@@ -215,6 +234,9 @@ public class PlayerOrientation : MonoBehaviour
     public void Jump()
     {
         fallingSpeed = -maxFallSpeed;
+
+        groundObject = null;
+
         StopAllCoroutines();
         StartCoroutine(AnimateFallingSpeed(fallingSpeed * -1, jumpDuration));
     }
@@ -222,6 +244,11 @@ public class PlayerOrientation : MonoBehaviour
     public void Land()
     {
 
+    }
+
+    public Vector3 GetPlatformOffset()
+    {
+        return groundObjectOffset;
     }
 
     IEnumerator AnimateFallingSpeed(float endValue, float duration)
