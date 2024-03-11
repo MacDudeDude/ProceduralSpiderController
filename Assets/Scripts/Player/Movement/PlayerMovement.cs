@@ -14,16 +14,20 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rb;
     private Vector3 input;
 
+    private Vector3 startingPosition;
+
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
         bodyHandler = GetComponent<PlayerOrientation>();
         state = transform.root.GetComponent<SpiderState>();
+        startingPosition = rb.position;
     }
 
     private void Update()
     {
         GetInputs();
+        CheckResetPosition();
     }
 
     private void FixedUpdate()
@@ -62,6 +66,12 @@ public class PlayerMovement : MonoBehaviour
         }
 
         return bodyForward.rotation * input * speed;
+    }
+
+    private void CheckResetPosition()
+    {
+        if (rb.position.y < -70)
+            transform.position = startingPosition;
     }
 
     private void OnDrawGizmos()

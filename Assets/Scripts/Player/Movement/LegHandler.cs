@@ -147,7 +147,7 @@ public class LegHandler : MonoBehaviour
         }
     }
 
-    Vector3 GetNewLegPosition(Transform legPosition, Transform legAnchor, int legNum)
+    Vector3 GetNewLegPosition(Transform legPosition, Transform legAnchor, int legNum, bool clampVelocity = false)
     {
         switch (state.currentState)
         {
@@ -187,16 +187,25 @@ public class LegHandler : MonoBehaviour
             }
         }
 
-        if(legRestingObjects[legNum] != hitColliders[closestCollider].transform)
-        {
-            legRestingObjects[legNum] = hitColliders[closestCollider].transform;
-            legRestingObjectsPreviousPosition[legNum] = hitColliders[closestCollider].transform.position;
-        }
-
         if(numColliders > 0)
         {
+            if (legRestingObjects[legNum] != hitColliders[closestCollider].transform)
+            {
+                legRestingObjects[legNum] = hitColliders[closestCollider].transform;
+                legRestingObjectsPreviousPosition[legNum] = hitColliders[closestCollider].transform.position;
+            }
+
             Vector3 bodyUnitsPerSecond = (bodyManager.GetBodyVelocity() / Time.fixedDeltaTime) * stepDuration;
-            Vector3 platformUnitsPerSecond = (bodyManager.GetPlatformOffset() / Time.fixedDeltaTime) * stepDuration;
+            Vector3 platformUnitsPerSecond = ((legRestingObjects[legNum].position - legRestingObjectsPreviousPosition[legNum]) / Time.fixedDeltaTime) * stepDuration;
+
+            if(clampVelocity)
+            {
+                bodyUnitsPerSecond.x = Mathf.Clamp(bodyUnitsPerSecond.x, -1, 1);
+                bodyUnitsPerSecond.x = Mathf.Clamp(bodyUnitsPerSecond.z, -1, 1);
+                platformUnitsPerSecond.x = Mathf.Clamp(platformUnitsPerSecond.x, -1, 1);
+                platformUnitsPerSecond.x = Mathf.Clamp(platformUnitsPerSecond.z, -1, 1);
+            }
+
             return hitColliders[closestCollider].ClosestPoint(legAnchor.position + bodyUnitsPerSecond + platformUnitsPerSecond);
         }else
         {
@@ -252,7 +261,9 @@ public class LegHandler : MonoBehaviour
 
         for (int i = 0; i < legTargets.Length; i++)
         {
-            Vector3 newLegPosition = GetNewLegPosition(legTargets[i], legAnchors[i], i);
+            if(legRestingObjects[i] != null)
+                legRestingObjectsPreviousPosition[i] = legRestingObjects[i].position;
+            Vector3 newLegPosition = GetNewLegPosition(legTargets[i], legAnchors[i], i, true);
             StartCoroutine(MoveLeg(legTargets[i], newLegPosition, bodyTransform.up, stepDurationLeft));
         }
     }

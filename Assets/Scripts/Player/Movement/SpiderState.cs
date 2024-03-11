@@ -24,6 +24,7 @@ public class SpiderState : MonoBehaviour
     private float biteBuffer;
     private float biteCooldown;
     private float jumpBuffer;
+    private float fallBuffer;
 
     public bool lockInputForces;
 
@@ -108,14 +109,23 @@ public class SpiderState : MonoBehaviour
 
             jumpBuffer -= Time.deltaTime;
             if (!isFalling && jumpBuffer < -2f)
+            {
+                isJumping = false;
                 isFalling = true;
+            }
         }
 
         biteCooldown -= Time.deltaTime;
         biteBuffer -= Time.deltaTime;
 
-        //if (!isFalling && !isDescending && !isJumping && !isGrounded && !wallDetected)
-        //    isFalling = true;
+        if (!isFalling && !isDescending && !isJumping && !isGrounded && !wallDetected)
+        {
+            fallBuffer -= Time.deltaTime;
+            if(fallBuffer < 0)
+                isFalling = true;
+        }
+        else
+            fallBuffer = 0.3f;
     }
 
     private void ResolveState()
