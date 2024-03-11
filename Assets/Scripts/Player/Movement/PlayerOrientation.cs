@@ -45,6 +45,7 @@ public class PlayerOrientation : MonoBehaviour
 
     private float distanceToWall;
 
+    private Vector3 bodyVelocity;
     private Vector3 previousPosition;
     private float fallingSpeed;
 
@@ -66,6 +67,7 @@ public class PlayerOrientation : MonoBehaviour
 
     private void FixedUpdate()
     {
+        CalculateStuff();
         CheckGround();
         CheckWall();
         SetUpRotation();
@@ -106,6 +108,12 @@ public class PlayerOrientation : MonoBehaviour
         }
 
         rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, rotationMatchSpeed * Time.fixedDeltaTime));
+    }
+
+    private void CalculateStuff()
+    {
+        bodyVelocity = absoulteRotationTransform.position - previousPosition;
+        previousPosition = absoulteRotationTransform.position;
     }
 
     private void CheckGround()
@@ -171,23 +179,19 @@ public class PlayerOrientation : MonoBehaviour
                 break;
             case SpiderState.MovementState.Falling:
             case SpiderState.MovementState.Jumping:
-                Vector3 newInputVector = absoulteRotationTransform.position - previousPosition;
-                if (VectorIsNotZero(newInputVector))
+                if (VectorIsNotZero(bodyVelocity))
                 {
-                    inputVector = newInputVector.normalized;
+                    inputVector = bodyVelocity.normalized;
                 }
-                previousPosition = absoulteRotationTransform.position;
                 break;
             case SpiderState.MovementState.Default:
             default:
                 if (useVelocityForWallCheck)
                 {
-                    newInputVector = absoulteRotationTransform.position - previousPosition;
-                    if (VectorIsNotZero(newInputVector))
+                    if (VectorIsNotZero(bodyVelocity))
                     {
-                        inputVector = newInputVector.normalized;
+                        inputVector = bodyVelocity.normalized;
                     }
-                    previousPosition = absoulteRotationTransform.position;
                 }
                 else
                 {
@@ -259,6 +263,11 @@ public class PlayerOrientation : MonoBehaviour
     public Vector3 GetPlatformOffset()
     {
         return groundObjectOffset;
+    }
+
+    public Vector3 GetBodyVelocity()
+    {
+        return bodyVelocity;
     }
 
     IEnumerator AnimateFallingSpeed(float endValue, float duration)

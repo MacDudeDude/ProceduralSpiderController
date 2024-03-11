@@ -24,6 +24,7 @@ public class LegHandler : MonoBehaviour
     [SerializeField] private bool debug;
 
     private Transform[] legRestingObjects;
+    private Vector3[] legRestingObjectsPreviousPosition;
     private SpiderState state;
     private PlayerOrientation bodyManager;
 
@@ -42,6 +43,7 @@ public class LegHandler : MonoBehaviour
         }
 
         legRestingObjects = new Transform[legTargets.Length];
+        legRestingObjectsPreviousPosition = new Vector3[legTargets.Length];
     }
 
     private void FixedUpdate()
@@ -80,12 +82,15 @@ public class LegHandler : MonoBehaviour
 
     private void AddMovingPlatformOffset()
     {
-        Transform platform = bodyManager.GetPlatformObject();
-        Vector3 platformOffset = bodyManager.GetPlatformOffset();
         for (int i = 0; i < legTargets.Length; i++)
         {
-            if(legRestingObjects[i] == platform)
+            if(legRestingObjects[i] != null)
+            {
+                Vector3 platformOffset = legRestingObjects[i].position - legRestingObjectsPreviousPosition[i];
+                legRestingObjectsPreviousPosition[i] = legRestingObjects[i].position;
+
                 legTargets[i].position = legTargets[i].position + platformOffset;
+            }
         }
     }
 
@@ -182,8 +187,21 @@ public class LegHandler : MonoBehaviour
             }
         }
 
-        legRestingObjects[legNum] = hitColliders[closestCollider].transform;
-        return numColliders > 0 ? hitColliders[closestCollider].ClosestPoint(legAnchor.position) : legAnchor.position;
+        if(legRestingObjects[legNum] != hitColliders[closestCollider].transform)
+        {
+            legRestingObjects[legNum] = hitColliders[closestCollider].transform;
+            legRestingObjectsPreviousPosition[legNum] = hitColliders[closestCollider].transform.position;
+        }
+
+        if(numColliders > 0)
+        {
+            Vector3 bodyUnitsPerSecond = (bodyManager.GetBodyVelocity() / Time.fixedDeltaTime) * stepDuration;
+            Vector3 platformUnitsPerSecond = (bodyManager.GetPlatformOffset() / Time.fixedDeltaTime) * stepDuration;
+            return hitColliders[closestCollider].ClosestPoint(legAnchor.position + bodyUnitsPerSecond + platformUnitsPerSecond);
+        }else
+        {
+            return legAnchor.position;
+        }
     }
 
     int GetLegGroup(int legNumber)
