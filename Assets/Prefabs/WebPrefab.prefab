@@ -84,7 +84,7 @@ LineRenderer:
       m_Curve:
       - serializedVersion: 3
         time: 0
-        value: 0.25
+        value: 1
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -158,3 +158,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   line: {fileID: 8943232470475561267}
   col: {fileID: 8943232470475561266}
+  objectAttached: {fileID: 0}
+  seperated: 0

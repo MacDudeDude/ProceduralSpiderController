@@ -50,7 +50,7 @@ public class SpiderWebManager : MonoBehaviour
             {
                 currentWeb.col.enabled = true;
                 currentWeb.col.center = currentWeb.line.bounds.center;
-                currentWeb.col.size = currentWeb.line.bounds.size + new Vector3(currentWeb.line.bounds.size.x, 0, currentWeb.line.bounds.size.z);
+                currentWeb.col.size = currentWeb.line.bounds.size;
 
                 currentWeb.seperated = true;
 
