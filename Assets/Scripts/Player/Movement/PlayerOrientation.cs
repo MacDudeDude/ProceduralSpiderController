@@ -255,6 +255,11 @@ public class PlayerOrientation : MonoBehaviour
 
     }
 
+    public Vector3 GetGroundPoint()
+    {
+        return groundPoint;
+    }
+
     public Transform GetPlatformObject()
     {
         return groundObject;
