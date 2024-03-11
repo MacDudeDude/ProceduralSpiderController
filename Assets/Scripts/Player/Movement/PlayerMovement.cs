@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     [SerializeField] private float speed;
+    [SerializeField] private float inputSmoothing;
     [SerializeField] private Transform bodyForward;
     [SerializeField] private Transform bodyHead;
     [SerializeField] private LayerMask collisionLayers;
@@ -12,7 +13,8 @@ public class PlayerMovement : MonoBehaviour
     private SpiderState state;
     private PlayerOrientation bodyHandler;
     private Rigidbody rb;
-    private Vector3 input;
+    public Vector3 input;
+    private Vector3 inputUnsmoothed;
 
     private Vector3 startingPosition;
 
@@ -37,9 +39,12 @@ public class PlayerMovement : MonoBehaviour
 
     private void GetInputs()
     {
-        input.x = Input.GetAxisRaw("Horizontal");
-        input.z = Input.GetAxisRaw("Vertical");
-        input.Normalize();
+        inputUnsmoothed.x = Input.GetAxisRaw("Horizontal");
+        inputUnsmoothed.z = Input.GetAxisRaw("Vertical");
+        inputUnsmoothed.Normalize();
+
+        input.x = Mathf.Lerp(input.x, inputUnsmoothed.x, inputSmoothing * Time.deltaTime);
+        input.z = Mathf.Lerp(input.z, inputUnsmoothed.z, inputSmoothing * Time.deltaTime);
     }
 
     private void Move()

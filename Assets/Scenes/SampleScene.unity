@@ -2719,11 +2719,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 12
+  inputSmoothing: 12
   bodyForward: {fileID: 1719654956}
   bodyHead: {fileID: 565001587}
   collisionLayers:
     serializedVersion: 2
     m_Bits: 55
+  input: {x: 0, y: 0, z: 0}
 --- !u!114 &580520464
 MonoBehaviour:
   m_ObjectHideFlags: 0
