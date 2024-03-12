@@ -17,6 +17,8 @@ public class SpiderState : MonoBehaviour
     public bool onGroundGround; //{ get; private set; }
     public bool wallDetected; //{ get; private set; }
 
+    public bool isWebbing;
+
     private bool isDescending;
     private bool isJumping;
     private bool isFalling;
@@ -72,9 +74,15 @@ public class SpiderState : MonoBehaviour
         if (isFalling || isJumping)
             return;
 
-        if(Input.GetKeyDown(KeyCode.C) && !onGroundGround)
+        if(Input.GetKeyDown(KeyCode.Q) && isGrounded)
         {
-            isDescending = true;
+            isWebbing = !isWebbing;
+        }
+
+        if(Input.GetKeyDown(KeyCode.C))
+        {
+            if(!onGroundGround && !isDescending)
+                isDescending = true;
         }
 
         if (Input.GetKeyDown(KeyCode.Space) && (isGrounded || isDescending))
@@ -125,7 +133,7 @@ public class SpiderState : MonoBehaviour
                 isFalling = true;
         }
         else
-            fallBuffer = 0.3f;
+            fallBuffer = 1f;
     }
 
     private void ResolveState()

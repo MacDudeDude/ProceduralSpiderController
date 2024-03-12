@@ -61,6 +61,9 @@ public class PlayerMovement : MonoBehaviour
 
     private Vector3 GetMovementForce()
     {
+        if (state.lockInputForces)
+            return Vector3.zero;
+
         switch (state.currentState)
         {
             case SpiderState.MovementState.Falling:
