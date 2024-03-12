@@ -9454,6 +9454,8 @@ MonoBehaviour:
   animMovement: 1
   animSpeed: 5
   speedModifier: 1
+  biteRange: 3
+  biteRadius: 0.15
 --- !u!4 &1603863802704831867
 Transform:
   m_ObjectHideFlags: 0
@@ -10625,7 +10627,7 @@ MonoBehaviour:
   canStepLayers:
     serializedVersion: 2
     m_Bits: 567
-  debug: 1
+  debug: 0
 --- !u!114 &6376737975680427044
 MonoBehaviour:
   m_ObjectHideFlags: 0

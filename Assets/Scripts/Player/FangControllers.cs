@@ -16,14 +16,21 @@ public class FangControllers : MonoBehaviour
     [SerializeField] private float animSpeed;
     [SerializeField] private float speedModifier;
 
+    [SerializeField] private float biteRange;
+    [SerializeField] private float biteRadius;
+
     private bool biting;
     private float speed;
     private Vector3 defaultLeftValue;
     private Vector3 defaultRightValue;
     private Vector3 previousPosition;
 
+    private Camera cam;
+
     private void Start()
     {
+        cam = Camera.main;
+
         defaultLeftValue = leftFang.localEulerAngles;
         defaultRightValue = rightFang.localEulerAngles;
     }
@@ -37,10 +44,24 @@ public class FangControllers : MonoBehaviour
     public void Bite()
     {
         StopAllCoroutines();
+        Chomp();
 
         biting = true;
         StartCoroutine(Bite(leftFang, Quaternion.Euler(leftFangBiteRotation), biteDuration));
         StartCoroutine(Bite(rightFang, Quaternion.Euler(rightFangBiteRotation), biteDuration));
+    }
+
+    private void Chomp()
+    {
+        RaycastHit biteRay;
+        if(Physics.SphereCast(cam.transform.position, biteRadius, cam.transform.forward, out biteRay, biteRange))
+        {
+            IBiteable biteable;
+            if(biteRay.collider.gameObject.TryGetComponent(out biteable))
+            {
+                biteable.Bitten();
+            }
+        }
     }
 
     private void IdleAnimation()
@@ -84,5 +105,14 @@ public class FangControllers : MonoBehaviour
 
         fang.localRotation = targetRotation;
         biting = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if(cam != null)
+        {
+            Gizmos.DrawLine(cam.transform.position, cam.transform.position + cam.transform.forward * biteRange);
+            Gizmos.DrawWireSphere(cam.transform.position + cam.transform.forward * biteRange, biteRadius);
+        }
     }
 }

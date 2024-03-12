@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WebStrand : MonoBehaviour
+public class WebStrand : MonoBehaviour, IBiteable
 {
     public LineRenderer line;
     public BoxCollider col;
@@ -72,5 +72,10 @@ public class WebStrand : MonoBehaviour
         col.size = new Vector3(0.1f, Vector3.Distance(startPos, endPos), 0.1f);
 
         transform.up = endPos - startPos;
+    }
+
+    public void Bitten()
+    {
+        Destroy(gameObject);
     }
 }
