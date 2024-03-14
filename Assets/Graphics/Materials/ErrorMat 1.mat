@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: ErrorMat
+  m_Name: ErrorMat 1
   m_Shader: {fileID: -6465566751694194690, guid: b416d9c587ec6614cb3b8f19b031ffc3, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
@@ -43,5 +43,5 @@ Material:
     - Vector1_d8da05a63dc04c98820833d70ae13887: 0.5
     - Vector1_e6963311b809455384a97172fd131f7a: 0.5
     m_Colors:
-    - Color_9f48bf4e2b124662b6bd40247a7d8a93: {r: 1, g: 0, b: 0, a: 0}
+    - Color_9f48bf4e2b124662b6bd40247a7d8a93: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

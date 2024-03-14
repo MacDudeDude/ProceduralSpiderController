@@ -10,9 +10,17 @@ public class MovingPlatform : MonoBehaviour
     [SerializeField] private float duration;
     [SerializeField] private bool hardSet;
     [SerializeField] private bool rotation;
+    [SerializeField] private float startDelay;
+    [SerializeField] private bool justRotate;
 
     private void Start()
     {
+        if (justRotate)
+        {
+            toPosition.Normalize();
+            return;
+        }
+
         if(!hardSet)
         {
             startPositon = transform.localPosition;
@@ -26,8 +34,16 @@ public class MovingPlatform : MonoBehaviour
         duration = Mathf.Clamp(duration, 1, Mathf.Infinity);
     }
 
+    private void Update()
+    {
+        if (justRotate && Time.realtimeSinceStartup > startDelay)
+            transform.Rotate(toPosition * Time.deltaTime * duration);
+    }
+
     IEnumerator MovePlatform()
     {
+        yield return new WaitForSeconds(startDelay);
+
         float time;
         while (enabled)
         {

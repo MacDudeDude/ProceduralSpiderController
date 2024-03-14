@@ -9,6 +9,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private Transform bodyForward;
     [SerializeField] private Transform bodyHead;
     [SerializeField] private LayerMask collisionLayers;
+    [SerializeField] private GameObject graphics;
+    [SerializeField] private GameObject graphicsRenderer;
 
     private SpiderState state;
     private PlayerOrientation bodyHandler;
@@ -17,6 +19,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 inputUnsmoothed;
 
     private Vector3 startingPosition;
+    bool isDead;
 
     private void Start()
     {
@@ -28,12 +31,18 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (isDead)
+            return;
+
         GetInputs();
         CheckResetPosition();
     }
 
     private void FixedUpdate()
     {
+        if (isDead)
+            return;
+
         Move();
     }
 
@@ -79,7 +88,40 @@ public class PlayerMovement : MonoBehaviour
     private void CheckResetPosition()
     {
         if (rb.position.y < -70)
-            transform.position = startingPosition;
+            ResetPosition();
+    }
+
+    public void ResetPosition()
+    {
+        if (isDead)
+            return;
+
+        isDead = true;
+        bodyHandler.LoseReferences();
+        state.currentState = SpiderState.MovementState.Default;
+        bodyHandler.enabled = false;
+        graphicsRenderer.gameObject.SetActive(false);
+        graphics.gameObject.SetActive(false);
+        rb.position = startingPosition;
+        Invoke(nameof(Enables), 0.5f);
+    }
+
+    private void Enables()
+    {
+        bodyHandler.LoseReferences();
+        state.currentState = SpiderState.MovementState.Default;
+        graphicsRenderer.gameObject.SetActive(true);
+        graphics.gameObject.SetActive(true);
+        bodyHandler.enabled = true;
+        isDead = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.layer == 13)
+            ResetPosition();
+        else if (collision.gameObject.layer == 15)
+            ResetPosition();
     }
 
     private void OnDrawGizmos()

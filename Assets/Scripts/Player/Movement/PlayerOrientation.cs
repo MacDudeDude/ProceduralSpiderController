@@ -278,6 +278,18 @@ public class PlayerOrientation : MonoBehaviour
         return bodyVelocity;
     }
 
+    public void LoseReferences()
+    {
+        groundObject = null;
+        groundObjectOffset = Vector3.zero;
+        groundObjectPreviousPosition = Vector3.zero;
+        groundPoint = Vector3.zero;
+        wallPoint = Vector3.zero;
+        wallNormal = Vector3.zero;
+        groundNormal = Vector3.zero;
+        distanceToWall = 0;
+    }
+
     IEnumerator AnimateFallingSpeed(float endValue, float duration)
     {
         float time = 0;
