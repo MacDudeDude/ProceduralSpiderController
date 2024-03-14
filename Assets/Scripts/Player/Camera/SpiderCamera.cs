@@ -21,7 +21,7 @@ public class SpiderCamera : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
             activeCamera++;
-            if (activeCamera > 3)
+            if (activeCamera > 1)
                 activeCamera = 0;
             transform.GetChild(0).gameObject.SetActive(camNumber == activeCamera);
         }
